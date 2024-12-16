@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React, { memo } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
 
 const NonMemoizedMarkdown = ({ children }: { children: string }) => {
   const components: Partial<Components> = {
@@ -12,7 +12,7 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
         // @ts-expect-error
         <pre
           {...props}
-          className={`${className} text-sm w-[80dvw] md:max-w-[500px] overflow-x-scroll bg-zinc-100 p-3 rounded-lg mt-2 dark:bg-zinc-800`}
+          className={`${className} text-sm w-full max-w-[80vw] md:max-w-[500px] overflow-x-scroll bg-zinc-100 p-3 rounded-lg mt-2 dark:bg-zinc-800`}
         >
           <code className={match[1]}>{children}</code>
         </pre>
@@ -41,7 +41,7 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
     },
     ul: ({ node, children, ...props }) => {
       return (
-        <ul className="list-decimal list-outside ml-4" {...props}>
+        <ul className="list-disc list-outside ml-4" {...props}>
           {children}
         </ul>
       );
@@ -111,7 +111,10 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
   };
 
   return (
-    <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+    <ReactMarkdown
+      rehypePlugins={[rehypeHighlight]}
+      components={components}
+    >
       {children}
     </ReactMarkdown>
   );

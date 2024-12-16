@@ -26,7 +26,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
   const { setOpenMobile, isMobile, open, setOpen } = useSidebar();
 
   return (
-    <Sidebar className="group-data-[side=right]:border-l-0">
+    <Sidebar className="group-data-[side=right]:border-l-0 rounded-l-md">
       <SidebarHeader className='rounded-r-md'>
         <SidebarMenu>
           <div className="flex flex-row justify-between items-center">

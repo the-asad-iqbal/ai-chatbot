@@ -11,8 +11,8 @@ export const Overview = () => {
       transition={{ delay: 0.5 }}
     >
       <div className="rounded-xl p-6 flex flex-col gap-8 leading-relaxed text-center max-w-xl">
-        <h2 className="text-2xl font-semibold mt-10 mb-2">
-          What can I help with?
+        <h2 className="text-4xl font-bold mt-12 mb-4 dark:text-white text-zinc-900">
+          What's up bruh!
         </h2>
       </div>
     </motion.div>

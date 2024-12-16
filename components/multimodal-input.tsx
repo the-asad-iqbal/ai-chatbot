@@ -233,14 +233,14 @@ function PureMultimodalInput({
       )}
 
       <div
-        className="bg-[#161616] gap-4 p-4 w-full max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto flex flex-col items-end rounded-xl cursor-text"
+        className="dark:bg-[#161616] bg-[#303030] gap-4 p-4 w-full max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto flex flex-col items-end rounded-xl cursor-text"
         onClick={() => textareaRef.current?.focus()}
       >
         <textarea
           ref={textareaRef}
           rows={2}
           spellCheck={false}
-          className="bg-[#161616] text-white w-full resize-none outline-none transition-all duration-200 ease-in-out overflow-auto p-3 max-h-[200px] h-auto min-h-[50px] border-none no-scrollbar text-sm sm:text-base"
+          className="dark:bg-[#161616] bg-[#303030] text-white w-full resize-none outline-none transition-all duration-200 ease-in-out overflow-auto p-3 max-h-[200px] h-auto min-h-[50px] border-none no-scrollbar text-sm sm:text-base"
           placeholder="Ask me anything!"
           value={input}
           onChange={handleInput}
@@ -296,7 +296,7 @@ function PureAttachmentsButton({
 }) {
   return (
     <Button
-      className="rounded-full w-10 h-10 border dark:border-zinc-600"
+      className="cursor-pointer rounded-full w-10 h-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black disabled:cursor-not-allowed"
       onClick={(event) => {
         event.preventDefault();
         fileInputRef.current?.click();
@@ -320,7 +320,7 @@ function PureStopButton({
 }) {
   return (
     <Button
-      className="rounded-full w-10 h-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black"
+      className="cursor-pointer rounded-full w-10 h-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black"
       onClick={(event) => {
         event.preventDefault();
         stop();
@@ -345,7 +345,7 @@ function PureSendButton({
 }) {
   return (
     <Button
-      className="rounded-full w-10 h-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black"
+      className="cursor-pointer rounded-full w-10 h-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black"
       onClick={(event) => {
         event.preventDefault();
         submitForm();

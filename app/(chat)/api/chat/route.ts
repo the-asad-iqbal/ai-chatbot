@@ -104,7 +104,8 @@ export async function POST(request: Request) {
         experimental_activeTools: allTools,
         tools: {
           getWeather: {
-            description: 'Get the current weather at a location',
+            description:
+              'Get the current weather at a location. The user can give you a city name, so don\'t ask them about the longitude and latitude. Just add it by yourself, or if you really really don\'t, then say give me the longitude and latitude.',
             parameters: z.object({
               latitude: z.number(),
               longitude: z.number(),
@@ -368,7 +369,7 @@ export async function POST(request: Request) {
           dataStream.writeData({
             type: 'finish',
             content: '',
-          })
+          });
         },
         experimental_telemetry: {
           isEnabled: true,
