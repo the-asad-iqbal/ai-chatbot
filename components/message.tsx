@@ -101,8 +101,8 @@ const PurePreviewMessage = ({
               )}
 
               <div
-                className={cn('flex flex-col gap-4', {
-                  'bg-primary text-primary-foreground px-3 py-2 rounded-xl':
+                className={cn('flex flex-col gap-4 shadow-sm', {
+                  'bg-[#303030] px-3 py-2 rounded-xl rounded-tr-none':
                     message.role === 'user',
                 })}
               >
@@ -260,9 +260,7 @@ export const ThinkingMessage = () => {
         </div>
 
         <div className="flex flex-col gap-2 w-full">
-          <div className="flex flex-col gap-4 text-muted-foreground">
-            Thinking...
-          </div>
+          <div className="h-4 w-4 rounded-full bg-white"></div>
         </div>
       </div>
     </motion.div>

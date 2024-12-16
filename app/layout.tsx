@@ -7,8 +7,8 @@ import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://chat.vercel.ai'),
-  title: 'Next.js Chatbot Template',
-  description: 'Next.js chatbot template using the AI SDK.',
+  title: 'AI Next.js Chatbot Template',
+  description: '',
 };
 
 export const viewport = {
@@ -63,7 +63,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Toaster position="top-center" />
+          <Toaster position="bottom-left" />
           {children}
         </ThemeProvider>
       </body>

@@ -6,7 +6,6 @@ import type {
   CreateMessage,
   Message,
 } from 'ai';
-import cx from 'classnames';
 import type React from 'react';
 import {
   useRef,
@@ -26,7 +25,6 @@ import { sanitizeUIMessages } from '@/lib/utils';
 import { ArrowUpIcon, PaperclipIcon, StopIcon } from './icons';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
 import { SuggestedActions } from './suggested-actions';
 import equal from 'fast-deep-equal';
 
@@ -77,6 +75,7 @@ function PureMultimodalInput({
   const adjustHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
+      textareaRef.current.rows = 1
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
     }
   };
@@ -103,6 +102,12 @@ function PureMultimodalInput({
   }, [input, setLocalStorageInput]);
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (event.target.value === '') {
+      textareaRef.current!.rows = 1;
+    } else {
+      textareaRef.current!.rows = 2;
+    }
+
     setInput(event.target.value);
     adjustHeight();
   };
@@ -111,6 +116,8 @@ function PureMultimodalInput({
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
 
   const submitForm = useCallback(() => {
+    if (!textareaRef.current) return;
+
     window.history.replaceState({}, '', `/chat/${chatId}`);
 
     handleSubmit(undefined, {
@@ -119,6 +126,8 @@ function PureMultimodalInput({
 
     setAttachments([]);
     setLocalStorageInput('');
+    setInput(''); // Clear the input field
+    textareaRef.current.style.height = '50px'; // Reset height to min height
 
     if (width && width > 768) {
       textareaRef.current?.focus();
@@ -128,6 +137,7 @@ function PureMultimodalInput({
     handleSubmit,
     setAttachments,
     setLocalStorageInput,
+    setInput,
     width,
     chatId,
   ]);
@@ -222,41 +232,46 @@ function PureMultimodalInput({
         </div>
       )}
 
-      <Textarea
-        ref={textareaRef}
-        placeholder="Send a message..."
-        value={input}
-        onChange={handleInput}
-        className={cx(
-          'min-h-[24px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-xl !text-base bg-muted',
-          className,
-        )}
-        rows={3}
-        autoFocus
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault();
+      <div
+        className="bg-[#161616] gap-4 p-4 w-full max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto flex flex-col items-end rounded-xl cursor-text"
+        onClick={() => textareaRef.current?.focus()}
+      >
+        <textarea
+          ref={textareaRef}
+          rows={2}
+          spellCheck={false}
+          className="bg-[#161616] text-white w-full resize-none outline-none transition-all duration-200 ease-in-out overflow-auto p-3 max-h-[200px] h-auto min-h-[50px] border-none no-scrollbar text-sm sm:text-base"
+          placeholder="Ask me anything!"
+          value={input}
+          onChange={handleInput}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+              event.preventDefault();
 
-            if (isLoading) {
-              toast.error('Please wait for the model to finish its response!');
-            } else {
-              submitForm();
+              if (isLoading) {
+                toast.error('Please wait for the model to finish its response!');
+              } else {
+                submitForm();
+              }
             }
-          }
-        }}
-      />
-
-      {isLoading ? (
-        <StopButton stop={stop} setMessages={setMessages} />
-      ) : (
-        <SendButton
-          input={input}
-          submitForm={submitForm}
-          uploadQueue={uploadQueue}
+          }}
         />
-      )}
+        <div className="flex flex-row justify-between items-center w-full gap-4 max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto">
+          <AttachmentsButton fileInputRef={fileInputRef} isLoading={isLoading} />
 
-      <AttachmentsButton fileInputRef={fileInputRef} isLoading={isLoading} />
+          {isLoading ? (
+            <StopButton stop={stop} setMessages={setMessages} />
+          ) : (
+            <SendButton
+              input={input}
+              submitForm={submitForm}
+              uploadQueue={uploadQueue}
+            />
+          )}
+        </div>
+
+
+      </div>
     </div>
   );
 }
@@ -281,7 +296,7 @@ function PureAttachmentsButton({
 }) {
   return (
     <Button
-      className="rounded-full p-1.5 h-fit absolute bottom-2 right-11 m-0.5 dark:border-zinc-700"
+      className="rounded-full w-10 h-10 border dark:border-zinc-600"
       onClick={(event) => {
         event.preventDefault();
         fileInputRef.current?.click();
@@ -305,7 +320,7 @@ function PureStopButton({
 }) {
   return (
     <Button
-      className="rounded-full p-1.5 h-fit absolute bottom-2 right-2 m-0.5 border dark:border-zinc-600"
+      className="rounded-full w-10 h-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black"
       onClick={(event) => {
         event.preventDefault();
         stop();
@@ -330,7 +345,7 @@ function PureSendButton({
 }) {
   return (
     <Button
-      className="rounded-full p-1.5 h-fit absolute bottom-2 right-2 m-0.5 border dark:border-zinc-600"
+      className="rounded-full w-10 h-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black"
       onClick={(event) => {
         event.preventDefault();
         submitForm();

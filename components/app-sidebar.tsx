@@ -19,37 +19,41 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { PanelLeft } from 'lucide-react';
 
 export function AppSidebar({ user }: { user: User | undefined }) {
   const router = useRouter();
-  const { setOpenMobile } = useSidebar();
+  const { setOpenMobile, isMobile, open, setOpen } = useSidebar();
 
   return (
-    <Sidebar className="group-data-[side=left]:border-r-0">
-      <SidebarHeader>
+    <Sidebar className="group-data-[side=right]:border-l-0">
+      <SidebarHeader className='rounded-r-md'>
         <SidebarMenu>
           <div className="flex flex-row justify-between items-center">
-            <Link
-              href="/"
-              onClick={() => {
-                setOpenMobile(false);
-              }}
-              className="flex flex-row gap-3 items-center"
-            >
-              <span className="text-lg font-semibold px-2 hover:bg-muted rounded-md cursor-pointer">
-                Chatbot
-              </span>
-            </Link>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="w-10 h-fit"
+                  onClick={() => {
+                    setOpen(!open)
+                    isMobile && setOpenMobile(false);
+                  }}
+                >
+                  <PanelLeft size={16} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">Toggle Sidebar</TooltipContent>
+            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
                   type="button"
-                  className="p-2 h-fit"
+                  className="w-10 h-fit"
                   onClick={() => {
                     setOpenMobile(false);
                     router.push('/');
-                    router.refresh();
                   }}
                 >
                   <PlusIcon />
@@ -63,7 +67,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
       <SidebarContent>
         <SidebarHistory user={user} />
       </SidebarContent>
-      <SidebarFooter>{user && <SidebarUserNav user={user} />}</SidebarFooter>
+      <SidebarFooter className='rounded-r-md'>{user && <SidebarUserNav user={user} />}</SidebarFooter>
     </Sidebar>
   );
 }
