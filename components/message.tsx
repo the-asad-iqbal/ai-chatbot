@@ -260,7 +260,7 @@ export const ThinkingMessage = () => {
         </div>
 
         <div className="flex flex-col gap-2 w-full">
-          <div className="h-4 w-4 rounded-full dark:bg-white bg-slate-700 animate-pulse"></div>
+          <div className="size-4 rounded-full dark:bg-white bg-slate-700 animate-pulse"></div>
         </div>
       </div>
     </motion.div>

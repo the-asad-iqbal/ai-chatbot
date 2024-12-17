@@ -18,7 +18,7 @@ export const Overview = () => {
             WebkitTextFillColor: 'transparent',
           }}
         >
-          What's up!
+          What&#39;s up!
         </h2>
       </div>
     </motion.div>
