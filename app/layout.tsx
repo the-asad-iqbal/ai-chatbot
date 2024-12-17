@@ -59,7 +59,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className={`${PoppinsFont.className} ${PoppinsFont.style}`}>
+      <body className={`${PoppinsFont.className}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

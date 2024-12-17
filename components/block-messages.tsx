@@ -41,6 +41,7 @@ function PureBlockMessages({
           key={message.id}
           message={message}
           block={block}
+          messages={messages}
           setBlock={setBlock}
           isLoading={isLoading && index === messages.length - 1}
           vote={

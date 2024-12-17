@@ -74,7 +74,7 @@ const PurePreviewMessage = ({
         )}
       >
         {message.role === 'assistant' && !hasPreviousToolInvocation && (
-          <div className="size-8 flex items-center rounded-full justify-center ring-1 shrink-0 ring-border">
+          <div className="size-8 flex items-center rounded-full justify-center ring-1 shrink-0 ring-border dark:text-white text-purple-500">
             <SparklesIcon size={14} />
           </div>
         )}
