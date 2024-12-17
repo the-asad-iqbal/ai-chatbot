@@ -1,18 +1,26 @@
 import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
+import { Poppins } from "next/font/google"
 
 import { ThemeProvider } from '@/components/theme-provider';
 
 import './globals.css';
 
+
+const PoppinsFont = Poppins({
+  subsets: ['latin-ext'],
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-poppins',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://chat.vercel.ai'),
-  title: 'AI Next.js Chatbot Template',
+  title: 'AI Chatbot',
   description: '',
 };
 
 export const viewport = {
-  maximumScale: 1, // Disable auto-zoom on mobile Safari
+  maximumScale: 1,
 };
 
 const LIGHT_THEME_COLOR = 'hsl(0 0% 100%)';
@@ -42,12 +50,7 @@ export default async function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      // `next-themes` injects an extra classname to the body element to avoid
-      // visual flicker before hydration. Hence the `suppressHydrationWarning`
-      // prop is necessary to avoid the React hydration mismatch warning.
-      // https://github.com/pacocoursey/next-themes?tab=readme-ov-file#with-app
-      suppressHydrationWarning
+      lang="en" suppressHydrationWarning
     >
       <head>
         <script
@@ -56,7 +59,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased">
+      <body className={`${PoppinsFont.className} ${PoppinsFont.style}`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

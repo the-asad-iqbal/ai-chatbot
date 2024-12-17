@@ -114,15 +114,7 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
 
       return isInline || !match ? (
         <code
-          className={`
-            ${props.className} 
-            text-sm 
-            bg-zinc-100 
-            dark:bg-zinc-800 
-            py-0.5 
-            px-1 
-            rounded-md
-          `}
+          className={`${props.className} text-sm bg-zinc-100 dark:bg-zinc-800  py-0.5 px-1 rounded-md`}
           {...props}
         >
           {props.children}

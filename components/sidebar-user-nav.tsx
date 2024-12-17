@@ -21,6 +21,8 @@ import {
 export function SidebarUserNav({ user }: { user: User }) {
   const { setTheme, theme } = useTheme()
 
+  localStorage.setItem('name', user?.name ?? '');
+  
   return (
     <SidebarMenu>
       <SidebarMenuItem>
