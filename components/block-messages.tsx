@@ -1,7 +1,6 @@
 import { Dispatch, memo, SetStateAction } from 'react';
 import { UIBlock } from './block';
 import { PreviewMessage } from './message';
-import { useScrollToBottom } from './use-scroll-to-bottom';
 import { Vote } from '@/lib/db/schema';
 import { ChatRequestOptions, Message } from 'ai';
 
@@ -32,13 +31,9 @@ function PureBlockMessages({
   reload,
   isReadonly,
 }: BlockMessagesProps) {
-  const [messagesContainerRef, messagesEndRef] =
-    useScrollToBottom<HTMLDivElement>();
-
   return (
     <div
-      ref={messagesContainerRef}
-      className="flex flex-col gap-4 h-full items-center overflow-y-scroll px-4 pt-10 min-w-sm max-w-md"
+      className="flex flex-col gap-4 h-full items-center overflow-y-auto px-4 pt-10 min-w-sm max-w-md"
     >
       {messages.map((message, index) => (
         <PreviewMessage
@@ -60,7 +55,6 @@ function PureBlockMessages({
       ))}
 
       <div
-        ref={messagesEndRef}
         className="shrink-0 min-w-[24px] min-h-[24px]"
       />
     </div>

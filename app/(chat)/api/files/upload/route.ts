@@ -1,17 +1,21 @@
-import { put } from '@vercel/blob';
+import { v2 as cloudinary } from 'cloudinary';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
 import { auth } from '@/app/(auth)/auth';
 
-// Use Blob instead of File since File is not available in Node.js environment
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 const FileSchema = z.object({
   file: z
     .instanceof(Blob)
     .refine((file) => file.size <= 5 * 1024 * 1024, {
       message: 'File size should be less than 5MB',
     })
-    // Update the file type based on the kind of files you want to accept
     .refine((file) => ['image/jpeg', 'image/png'].includes(file.type), {
       message: 'File type should be JPEG or PNG',
     }),
@@ -46,22 +50,28 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
 
-    // Get filename from formData since Blob doesn't have name property
     const filename = (formData.get('file') as File).name;
+
     const fileBuffer = await file.arrayBuffer();
+    const base64File = Buffer.from(fileBuffer).toString('base64');
 
-    try {
-      const data = await put(`${filename}`, fileBuffer, {
-        access: 'public',
-      });
+    const dataUri = `data:${file.type};base64,${base64File}`;
 
-      return NextResponse.json(data);
-    } catch (error) {
-      return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
-    }
+    const uploadResponse = await cloudinary.uploader.upload(dataUri, {
+      folder: 'uploads',
+      public_id: filename.split('.')[0],
+      resource_type: 'auto',
+    });
+
+    return NextResponse.json({
+      url: uploadResponse.secure_url,
+      name: filename,
+      contentType: file.type,
+    });
   } catch (error) {
+    console.error('Error uploading file:', error);
     return NextResponse.json(
-      { error: 'Failed to process request' },
+      { error: 'Failed to upload file to Cloudinary' },
       { status: 500 },
     );
   }

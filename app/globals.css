@@ -145,3 +145,33 @@
   @apply bg-blue-200 hover:bg-blue-300 dark:hover:bg-blue-400/50 dark:text-blue-50 dark:bg-blue-500/40;
 }
 
+/* Dark Rounded Scrollbar */
+.dark-rounded-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent; /* Invisible thumb on invisible track */
+}
+
+.dark-rounded-scrollbar::-webkit-scrollbar {
+  @apply w-3 h-3 bg-transparent;
+}
+
+.dark-rounded-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent 
+    rounded-full;
+}
+
+.dark-rounded-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-transparent 
+    rounded-full 
+    hover:bg-transparent 
+    dark:hover:bg-transparent 
+    transition-colors 
+    duration-300 
+    ease-in-out 
+    shadow-md;
+}
+
+
+code.hljs {
+  @apply my-2 w-auto max-w-2xl mx-auto overflow-x-auto rounded-lg;
+}

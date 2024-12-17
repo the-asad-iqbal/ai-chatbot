@@ -2,7 +2,6 @@ import React, { memo, useState } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/github-dark.css';
-import Image from 'next/image';
 
 const CodeBlock = ({
   className,
@@ -16,17 +15,29 @@ const CodeBlock = ({
   const language = match ? match[1] : 'text';
 
   const handleCopy = () => {
-    const code = React.Children.toArray(children)[0] as string;
-    navigator.clipboard.writeText(code.toString());
-    setIsCopied(true);
+    const code = React.Children.toArray(children)
+      .map(child => {
+        if (typeof child === 'string') return child;
+        if (React.isValidElement(child)) return child.props?.children || '';
+        return '';
+      }).join('');
 
-    setTimeout(() => {
-      setIsCopied(false);
-    }, 2000);
+    if (code) {
+      navigator.clipboard.writeText(code)
+        .then(() => {
+          setIsCopied(true);
+          setTimeout(() => setIsCopied(false), 2000);
+        })
+        .catch(err => {
+          console.error("Failed to copy text: ", err);
+        });
+    } else {
+      console.error("No valid code to copy.");
+    }
   };
 
   return (
-    <div className="w-full max-w-full overflow-x-auto my-2">
+    <div className="w-auto max-w-5xl overflow-x-auto my-2">
       <div className="w-full bg-zinc-800 px-4 py-2 flex justify-between items-center rounded-t-lg">
         <span className="text-sm text-gray-300 font-medium">
           {language}
@@ -250,7 +261,7 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
     <ReactMarkdown
       rehypePlugins={[rehypeHighlight]}
       components={components}
-      className="w-full"
+      className="w-full max-w-5xl"
     >
       {children}
     </ReactMarkdown>

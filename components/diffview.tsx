@@ -11,8 +11,7 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import React, { useEffect, useRef } from 'react';
 import { renderToString } from 'react-dom/server';
-import ReactMarkdown from 'react-markdown';
-import rehypeighlight from 'rehype-highlight';
+import { Markdown } from './markdown';
 
 import { diffEditor, DiffType } from '@/lib/editor/diff';
 
@@ -61,10 +60,10 @@ export const DiffView = ({ oldContent, newContent }: DiffEditorProps) => {
       const parser = DOMParser.fromSchema(diffSchema);
 
       const oldHtmlContent = renderToString(
-        <ReactMarkdown rehypePlugins={[rehypeighlight]}>{oldContent}</ReactMarkdown>,
+        <Markdown>{oldContent}</Markdown>,
       );
       const newHtmlContent = renderToString(
-        <ReactMarkdown rehypePlugins={[rehypeighlight]}>{newContent}</ReactMarkdown>,
+        <Markdown>{newContent}</Markdown>,
       );
 
       const oldContainer = document.createElement('div');
