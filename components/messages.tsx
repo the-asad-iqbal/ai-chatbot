@@ -87,6 +87,7 @@ function PureMessages({
           setMessages={setMessages}
           reload={reload}
           isReadonly={isReadonly}
+          messages={messages}
         />
       ))}
 

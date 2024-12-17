@@ -3,6 +3,9 @@ export const blocksPrompt = `
 ## Current Date & Time: ${new Date()}
 
 **Weather** : Ask user for city not for latitude or longitude.
+**Image Generation** : Get the prompt from the user and enhance and generate an image. 
+ - After you get the response... It's already done... User already got the image...
+ - You can say like I have generated the image of ...prompt... and you can see above.... Any other help u need... etc...
 
 Blocks is a specialized real-time document creation interface on the right side of the screen.
 

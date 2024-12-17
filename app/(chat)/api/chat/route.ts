@@ -6,6 +6,14 @@ import {
   streamText,
 } from 'ai';
 import { z } from 'zod';
+import Together from "together-ai";
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 import { auth } from '@/app/(auth)/auth';
 import { customModel } from '@/lib/ai';
@@ -35,7 +43,8 @@ type AllowedTools =
   | 'createDocument'
   | 'updateDocument'
   | 'requestSuggestions'
-  | 'getWeather';
+  | 'getWeather'
+  | 'generateImage';
 
 const blocksTools: AllowedTools[] = [
   'createDocument',
@@ -45,7 +54,13 @@ const blocksTools: AllowedTools[] = [
 
 const weatherTools: AllowedTools[] = ['getWeather'];
 
-const allTools: AllowedTools[] = [...blocksTools, ...weatherTools];
+const generateImageTools: AllowedTools[] = ['generateImage'];
+
+const allTools: AllowedTools[] = [
+  ...blocksTools,
+  ...weatherTools,
+  ...generateImageTools,
+];
 
 export async function POST(request: Request) {
   const {
@@ -88,6 +103,8 @@ export async function POST(request: Request) {
       { ...userMessage, id: userMessageId, createdAt: new Date(), chatId: id },
     ],
   });
+
+  const together = new Together({ apiKey: process.env.TOGETHER_API_KEY });
 
   return createDataStreamResponse({
     execute: dataStream => {
@@ -333,6 +350,49 @@ export async function POST(request: Request) {
               };
             },
           },
+          generateImage: {
+            description: 'Generates an image based on a provided prompt',
+            parameters: z.object({
+              prompt: z
+                .string()
+                .describe('Description or instruction for generating the image'),
+            }),
+            execute: async ({ prompt }) => {
+              try {
+                // Generate the image in base64 using Together AI
+                const response = await together.images.create({
+                  model: "black-forest-labs/FLUX.1-schnell-Free", // Model identifier
+                  prompt: prompt,
+                  width: 1024,
+                  height: 768,
+                  steps: 4,
+                  n: 1,
+                  response_format: "base64",
+                });
+
+                const base64Image = response.data[0]?.b64_json;
+
+                if (!base64Image) {
+                  throw new Error("Image generation failed.");
+                }
+
+                const uploadResponse = await cloudinary.uploader.upload(`data:image/png;base64,${base64Image}`, {
+                  folder: 'uploads',
+                  public_id: generateUUID(),
+                  resource_type: 'image',
+                });
+
+                return {
+                  url: uploadResponse.secure_url,
+                  prompt,
+                  message: "Image generated and displayed successfully. Now say, I have generated.....",
+                };
+              } catch (error) {
+                console.error('Error generating or uploading image:', error);
+                return { error: 'Failed to generate or upload image.' };
+              }
+            }
+          },
         },
         onFinish: async ({ response }) => {
           if (session.user?.id) {
@@ -370,10 +430,6 @@ export async function POST(request: Request) {
             type: 'finish',
             content: '',
           });
-        },
-        experimental_telemetry: {
-          isEnabled: true,
-          functionId: 'stream-text',
         },
       });
 

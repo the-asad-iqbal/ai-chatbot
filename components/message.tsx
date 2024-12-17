@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { MessageEditor } from './message-editor';
+import { ImageToolCallSkeleton, ImageToolResponse } from './ImageTool';
 
 const PurePreviewMessage = ({
   chatId,
@@ -30,6 +31,7 @@ const PurePreviewMessage = ({
   setMessages,
   reload,
   isReadonly,
+  messages
 }: {
   chatId: string;
   message: Message;
@@ -44,8 +46,16 @@ const PurePreviewMessage = ({
     chatRequestOptions?: ChatRequestOptions,
   ) => Promise<string | null | undefined>;
   isReadonly: boolean;
+  messages: Array<Message>;
 }) => {
   const [mode, setMode] = useState<'view' | 'edit'>('view');
+
+  const currentIndex = messages.findIndex((m) => m.id === message.id);
+  const previousMessage = currentIndex > 0 ? messages[currentIndex - 1] : null;
+
+  const hasPreviousToolInvocation =
+    previousMessage?.toolInvocations &&
+    previousMessage.toolInvocations.length > 0;
 
   return (
     <motion.div
@@ -63,7 +73,7 @@ const PurePreviewMessage = ({
           },
         )}
       >
-        {message.role === 'assistant' && (
+        {message.role === 'assistant' && !hasPreviousToolInvocation && (
           <div className="size-8 flex items-center rounded-full justify-center ring-1 shrink-0 ring-border">
             <SparklesIcon size={14} />
           </div>
@@ -161,6 +171,8 @@ const PurePreviewMessage = ({
                           setBlock={setBlock}
                           isReadonly={isReadonly}
                         />
+                      ) : toolName === 'generateImage' ? (
+                        <ImageToolResponse result={result} />
                       ) : (
                         <pre>{JSON.stringify(result, null, 2)}</pre>
                       )}
@@ -197,6 +209,8 @@ const PurePreviewMessage = ({
                         setBlock={setBlock}
                         isReadonly={isReadonly}
                       />
+                    ) : toolName === 'generateImage' ? (
+                      <ImageToolCallSkeleton key={toolCallId} />
                     ) : null}
                   </div>
                 );
@@ -266,3 +280,4 @@ export const ThinkingMessage = () => {
     </motion.div>
   );
 };
+

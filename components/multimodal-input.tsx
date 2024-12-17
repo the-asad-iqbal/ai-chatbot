@@ -103,8 +103,6 @@ function PureMultimodalInput({
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (event.target.value === '') {
-      textareaRef.current!.rows = 1;
-    } else {
       textareaRef.current!.rows = 2;
     }
 
@@ -238,7 +236,6 @@ function PureMultimodalInput({
       >
         <textarea
           ref={textareaRef}
-          rows={2}
           spellCheck={false}
           className="dark:bg-[#161616] bg-[#494949] text-white w-full resize-none outline-none transition-all duration-200 ease-in-out overflow-auto p-3 max-h-[200px] h-auto min-h-[50px] border-none no-scrollbar text-sm sm:text-base"
           placeholder="Ask me anything!"

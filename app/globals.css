@@ -108,6 +108,7 @@
     font-style: normal;
     font-weight: 100 900;
     src: url(/fonts/geist.woff2) format("woff2");
+    font-display: swap;
   }
 
   @font-face {
@@ -115,6 +116,7 @@
     font-style: normal;
     font-weight: 100 900;
     src: url(/fonts/geist-mono.woff2) format("woff2");
+    font-display: swap;
   }
 }
 
@@ -145,10 +147,9 @@
   @apply bg-blue-200 hover:bg-blue-300 dark:hover:bg-blue-400/50 dark:text-blue-50 dark:bg-blue-500/40;
 }
 
-/* Dark Rounded Scrollbar */
 .dark-rounded-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: transparent transparent; /* Invisible thumb on invisible track */
+  scrollbar-color: transparent transparent;
 }
 
 .dark-rounded-scrollbar::-webkit-scrollbar {
@@ -156,8 +157,7 @@
 }
 
 .dark-rounded-scrollbar::-webkit-scrollbar-track {
-  @apply bg-transparent 
-    rounded-full;
+  @apply bg-transparent rounded-full;
 }
 
 .dark-rounded-scrollbar::-webkit-scrollbar-thumb {
@@ -170,7 +170,6 @@
     ease-in-out 
     shadow-md;
 }
-
 
 code.hljs {
   @apply my-2 w-auto max-w-2xl mx-auto overflow-x-auto rounded-lg;
