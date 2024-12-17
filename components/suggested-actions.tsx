@@ -23,7 +23,7 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
     {
       title: 'Help me draft an essay',
       label: 'about Allama Iqbal.',
-      action: 'Help me draft a short essay about Allama Muhammad Iqbal.',
+      action: 'Help me draft a shortest essay about Allama Muhammad Iqbal.',
     },
   ];
 
