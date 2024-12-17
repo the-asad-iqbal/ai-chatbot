@@ -145,6 +145,3 @@
   @apply bg-blue-200 hover:bg-blue-300 dark:hover:bg-blue-400/50 dark:text-blue-50 dark:bg-blue-500/40;
 }
 
-pre.language-json{
-  @apply w-full max-w-5xl overflow-x-auto
-}

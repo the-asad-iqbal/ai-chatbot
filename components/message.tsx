@@ -101,7 +101,7 @@ const PurePreviewMessage = ({
               )}
 
               <div
-                className={cn('flex flex-col gap-4 shadow-sm', {
+                className={cn('flex flex-col gap-4 shadow-sm dark:shadow-none', {
                   'bg-[#303030] text-white dark:text-gray-200 px-3 py-2 rounded-xl rounded-tr-none':
                     message.role === 'user',
                 })}
@@ -259,8 +259,8 @@ export const ThinkingMessage = () => {
           <SparklesIcon size={14} />
         </div>
 
-        <div className="flex flex-col gap-2 w-full">
-          <div className="h-4 w-4 rounded-full bg-white"></div>
+        <div className="flex flex-col gap-2 w-full items-center">
+          <div className="h-4 w-4 rounded-full dark:bg-white bg-slate-700"></div>
         </div>
       </div>
     </motion.div>

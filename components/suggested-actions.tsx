@@ -17,13 +17,13 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
   const suggestedActions = [
     {
       title: 'What is the weather',
-      label: 'in San Francisco?',
-      action: 'What is the weather in San Francisco?',
+      label: 'in Arifwala?',
+      action: 'What is the weather in in Arifwala today?',
     },
     {
       title: 'Help me draft an essay',
-      label: 'about Silicon Valley',
-      action: 'Help me draft a short essay about Silicon Valley',
+      label: 'about Allama Iqbal.',
+      action: 'Help me draft a short essay about Allama Muhammad Iqbal.',
     },
   ];
 

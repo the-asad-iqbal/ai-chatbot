@@ -233,14 +233,14 @@ function PureMultimodalInput({
       )}
 
       <div
-        className="dark:bg-[#161616] bg-[#303030] gap-4 p-4 w-full max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto flex flex-col items-end rounded-xl cursor-text"
+        className="dark:bg-[#161616] bg-[#494949] gap-4 p-4 w-full max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto flex flex-col items-end rounded-xl cursor-text"
         onClick={() => textareaRef.current?.focus()}
       >
         <textarea
           ref={textareaRef}
           rows={2}
           spellCheck={false}
-          className="dark:bg-[#161616] bg-[#303030] text-white w-full resize-none outline-none transition-all duration-200 ease-in-out overflow-auto p-3 max-h-[200px] h-auto min-h-[50px] border-none no-scrollbar text-sm sm:text-base"
+          className="dark:bg-[#161616] bg-[#494949] text-white w-full resize-none outline-none transition-all duration-200 ease-in-out overflow-auto p-3 max-h-[200px] h-auto min-h-[50px] border-none no-scrollbar text-sm sm:text-base"
           placeholder="Ask me anything!"
           value={input}
           onChange={handleInput}

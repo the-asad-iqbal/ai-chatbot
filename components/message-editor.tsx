@@ -70,7 +70,7 @@ export function MessageEditor({
         </Button>
         <Button
           variant="default"
-          className="h-fit py-2 px-3"
+          className="h-fit py-2 px-3 dark:bg-white dark:text-black doark:hover:bg-white/75 dark:hover:text-black"
           disabled={isSubmitting}
           onClick={async () => {
             setIsSubmitting(true);
