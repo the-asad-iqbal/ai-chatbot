@@ -9,13 +9,13 @@ import { useUserMessageId } from '@/hooks/use-user-message-id';
 
 type StreamingDelta = {
   type:
-    | 'text-delta'
-    | 'title'
-    | 'id'
-    | 'suggestion'
-    | 'clear'
-    | 'finish'
-    | 'user-message-id';
+  | 'text-delta'
+  | 'title'
+  | 'id'
+  | 'suggestion'
+  | 'clear'
+  | 'finish'
+  | 'user-message-id';
 
   content: string | Suggestion;
 };
@@ -73,8 +73,8 @@ export function useBlockStream({
             content: draftBlock.content + (delta.content as string),
             isVisible:
               draftBlock.status === 'streaming' &&
-              draftBlock.content.length > 200 &&
-              draftBlock.content.length < 250
+                draftBlock.content.length > 200 &&
+                draftBlock.content.length < 250
                 ? true
                 : draftBlock.isVisible,
             status: 'streaming',
@@ -107,5 +107,5 @@ export function useBlockStream({
           return draftBlock;
       }
     });
-  }, [streamingData, setBlock]);
+  }, [streamingData, setBlock, setUserMessageIdFromServer]);
 }

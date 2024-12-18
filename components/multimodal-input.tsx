@@ -293,7 +293,7 @@ function PureAttachmentsButton({
 }) {
   return (
     <Button
-      className="cursor-pointer rounded-full w-10 h-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black disabled:cursor-not-allowed"
+      className="cursor-pointer rounded-full size-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black disabled:cursor-not-allowed"
       onClick={(event) => {
         event.preventDefault();
         fileInputRef.current?.click();
@@ -317,7 +317,7 @@ function PureStopButton({
 }) {
   return (
     <Button
-      className="cursor-pointer rounded-full w-10 h-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black"
+      className="cursor-pointer rounded-full size-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black"
       onClick={(event) => {
         event.preventDefault();
         stop();
@@ -342,7 +342,7 @@ function PureSendButton({
 }) {
   return (
     <Button
-      className="cursor-pointer rounded-full w-10 h-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black"
+      className="cursor-pointer rounded-full size-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black"
       onClick={(event) => {
         event.preventDefault();
         submitForm();

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Skeleton } from "@/components/ui/skeleton"
 import { ImageIcon, DownloadIcon } from 'lucide-react'
+import Image from 'next/image'
 
 export const ImageToolCallSkeleton: React.FC = () => (
     <div className="w-full p-4 bg-background border rounded-lg">
@@ -35,10 +36,12 @@ export const ImageToolResponse: React.FC<{
                 </div>
             </div>
 
-            <div className="w-full h-full relative">
-                <img
+            <div className="size-full relative">
+                <Image
                     src={result.url}
                     alt={result.prompt || "Generated Image"}
+                    width={654}
+                    height={490}
                     className="rounded-lg object-cover"
                     sizes="h-96 (max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
@@ -49,7 +52,7 @@ export const ImageToolResponse: React.FC<{
                     rel="noopener noreferrer"
                     className="absolute bottom-2 right-2 bg-white text-xs text-black p-1 rounded shadow-lg flex items-center space-x-1"
                 >
-                    <DownloadIcon className="w-4 h-4 text-black" />
+                    <DownloadIcon className="size-4 text-black" />
                     <span>Download</span>
                 </a>
             </div>
