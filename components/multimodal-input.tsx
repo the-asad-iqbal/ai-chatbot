@@ -26,6 +26,7 @@ import { ArrowUpIcon, PaperclipIcon, StopIcon } from './icons';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from './ui/button';
 import { SuggestedActions } from './suggested-actions';
+import { useIsMobile } from '@/hooks/use-mobile';
 import equal from 'fast-deep-equal';
 
 function PureMultimodalInput({
@@ -108,6 +109,9 @@ function PureMultimodalInput({
 
     setInput(event.target.value);
     adjustHeight();
+    if (useIsMobile()) {
+      textareaRef.current!.addEventListener('input', adjustHeight);
+    }
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -124,8 +128,8 @@ function PureMultimodalInput({
 
     setAttachments([]);
     setLocalStorageInput('');
-    setInput(''); // Clear the input field
-    textareaRef.current.style.height = '50px'; // Reset height to min height
+    setInput('');
+    textareaRef.current!.rows = 2;
 
     if (width && width > 768) {
       textareaRef.current?.focus();
