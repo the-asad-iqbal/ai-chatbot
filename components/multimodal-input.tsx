@@ -79,26 +79,14 @@ function PureMultimodalInput({
     }
   };
 
-  const [localStorageInput, setLocalStorageInput] = useLocalStorage(
-    'input',
-    '',
-  );
-
   useEffect(() => {
     if (textareaRef.current) {
-      const domValue = textareaRef.current.value;
-      // Prefer DOM value over localStorage to handle hydration
-      const finalValue = domValue || localStorageInput || '';
-      setInput(finalValue);
+      setInput(textareaRef.current.value);
       adjustHeight();
     }
     // Only run once after hydration
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    setLocalStorageInput(input);
-  }, [input, setLocalStorageInput]);
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (event.target.value === '') {
@@ -123,7 +111,6 @@ function PureMultimodalInput({
     });
 
     setAttachments([]);
-    setLocalStorageInput('');
     setInput('');
     textareaRef.current!.rows = 2;
 
@@ -134,7 +121,6 @@ function PureMultimodalInput({
     attachments,
     handleSubmit,
     setAttachments,
-    setLocalStorageInput,
     setInput,
     width,
     chatId,
