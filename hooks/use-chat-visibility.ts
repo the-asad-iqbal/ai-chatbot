@@ -6,6 +6,17 @@ import { Chat } from '@/lib/db/schema';
 import { useMemo } from 'react';
 import useSWR, { useSWRConfig } from 'swr';
 
+type Chats = {
+  chats: Chat[];
+  pagination: {
+    currentPage: number;
+    pageSize: number;
+    totalChats: number;
+    totalPages: number;
+    isLastPage: boolean;
+  };
+}
+
 export function useChatVisibility({
   chatId,
   initialVisibility,
@@ -14,7 +25,7 @@ export function useChatVisibility({
   initialVisibility: VisibilityType;
 }) {
   const { mutate, cache } = useSWRConfig();
-  const history: Array<Chat> = cache.get('/api/history')?.data;
+  const history: Chats = cache.get('/api/history')?.data;
 
   const { data: localVisibility, mutate: setLocalVisibility } = useSWR(
     `${chatId}-visibility`,
@@ -26,7 +37,7 @@ export function useChatVisibility({
 
   const visibilityType = useMemo(() => {
     if (!history) return localVisibility;
-    const chat = history.find((chat) => chat.id === chatId);
+    const chat = history?.chats?.find((chat) => chat.id === chatId);
     if (!chat) return 'private';
     return chat.visibility;
   }, [history, chatId, localVisibility]);
@@ -34,11 +45,13 @@ export function useChatVisibility({
   const setVisibilityType = (updatedVisibilityType: VisibilityType) => {
     setLocalVisibility(updatedVisibilityType);
 
-    mutate<Array<Chat>>(
+    mutate<Chats>(
       '/api/history',
       (history) => {
         return history
-          ? history.map((chat) => {
+          ? {
+            ...history,
+            chats: history.chats.map((chat) => {
               if (chat.id === chatId) {
                 return {
                   ...chat,
@@ -47,9 +60,10 @@ export function useChatVisibility({
               }
               return chat;
             })
-          : [];
+          }
+          : <Chats>{};
       },
-      { revalidate: false },
+      { revalidate: false }
     );
 
     updateChatVisibility({

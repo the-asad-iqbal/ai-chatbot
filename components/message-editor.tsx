@@ -27,8 +27,8 @@ export function MessageEditor({
 }: MessageEditorProps) {
   const { userMessageIdFromServer } = useUserMessageId();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [prompt, setPrompt] = useState<string>("");
 
+  const [draftContent, setDraftContent] = useState<string>(message.content);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export function MessageEditor({
   };
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPrompt(event.target.value);
+    setDraftContent(event.target.value);
     adjustHeight();
   };
 
@@ -54,7 +54,7 @@ export function MessageEditor({
       <Textarea
         ref={textareaRef}
         className="bg-transparent outline-none overflow-hidden resize-none !text-base rounded-xl w-full"
-        value={prompt}
+        value={draftContent}
         onChange={handleInput}
       />
 
@@ -70,7 +70,7 @@ export function MessageEditor({
         </Button>
         <Button
           variant="default"
-          className="h-fit py-2 px-3 dark:bg-white dark:text-black doark:hover:bg-white/75 dark:hover:text-black"
+          className="h-fit py-2 px-3"
           disabled={isSubmitting}
           onClick={async () => {
             setIsSubmitting(true);
@@ -92,7 +92,7 @@ export function MessageEditor({
               if (index !== -1) {
                 const updatedMessage = {
                   ...message,
-                  content: prompt,
+                  content: draftContent,
                 };
 
                 return [...messages.slice(0, index), updatedMessage];

@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { genSaltSync, hashSync } from 'bcrypt-ts';
-import { and, asc, desc, eq, gt, gte } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, gte, count } from 'drizzle-orm';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
@@ -17,11 +17,6 @@ import {
   vote,
 } from './schema';
 
-// Optionally, if not using email/pass login, you can
-// use the Drizzle adapter for Auth.js / NextAuth
-// https://authjs.dev/reference/adapter/drizzle
-
-// biome-ignore lint: Forbidden non-null assertion.
 const client = postgres(process.env.POSTGRES_URL!);
 const db = drizzle(client);
 
@@ -85,15 +80,49 @@ export async function deleteChatById({ id }: { id: string }) {
   }
 }
 
-export async function getChatsByUserId({ id }: { id: string }) {
+export async function getChatsByUserId({
+  id,
+  limit = 10,
+  page = 1
+}: {
+  id: string;
+  limit?: number;
+  page?: number;
+}) {
+  // Calculate offset for pagination
+  const offset = (page - 1) * limit;
+
   try {
-    return await db
+    // Get total count of chats for the user
+    const [totalCountResult] = await db
+      .select({ count: count() })
+      .from(chat)
+      .where(eq(chat.userId, id));
+
+    const totalChats = totalCountResult.count;
+    const totalPages = Math.ceil(totalChats / limit);
+
+    // Fetch chats for the current page
+    const chats = await db
       .select()
       .from(chat)
       .where(eq(chat.userId, id))
-      .orderBy(desc(chat.createdAt));
+      .orderBy(desc(chat.createdAt))
+      .limit(limit)
+      .offset(offset);
+
+    return {
+      chats,
+      pagination: {
+        currentPage: page,
+        pageSize: limit,
+        totalChats,
+        totalPages,
+        isLastPage: page >= totalPages
+      }
+    };
   } catch (error) {
-    console.error('Failed to get chats by user from database');
+    console.error('Failed to get chats by user from database', error);
     throw error;
   }
 }

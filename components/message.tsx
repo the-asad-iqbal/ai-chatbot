@@ -4,6 +4,7 @@ import type { ChatRequestOptions, Message } from 'ai';
 import cx from 'classnames';
 import { motion } from 'framer-motion';
 import { memo, useState, type Dispatch, type SetStateAction } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 import type { Vote } from '@/lib/db/schema';
 
@@ -111,12 +112,12 @@ const PurePreviewMessage = ({
               )}
 
               <div
-                className={cn('flex flex-col gap-4 shadow-sm light:shadow-none max-w-2xl w-auto', {
-                  'bg-[#303030] text-white dark:text-gray-200 px-3 py-2 rounded-xl rounded-tr-none':
-                    message.role === 'user',
+                className={cn('flex flex-col gap-4 max-w-2xl w-auto text-gray-900 dark:text-gray-50', {
+                  'bg-[#303030] text-gray-50 px-3 py-2 rounded-xl rounded-tr-none': message.role === 'user',
                 })}
+                style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
               >
-                <Markdown>{message.content as string}</Markdown>
+                {message.role !== 'user' ? (<Markdown>{message.content as string}</Markdown>) : (<ReactMarkdown>{message.content as string}</ReactMarkdown>)}
               </div>
             </div>
           )}

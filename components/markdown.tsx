@@ -37,7 +37,7 @@ const CodeBlock = ({
   };
 
   return (
-    <div className="w-auto max-w-5xl overflow-x-auto my-2">
+    <div className="w-auto max-w-2xl overflow-x-auto my-2">
       <div className="w-full bg-zinc-800 px-4 py-2 flex justify-between items-center rounded-t-lg">
         <span className="text-sm text-gray-300 font-medium">
           {language}
@@ -103,6 +103,7 @@ const MarkdownImage = ({
     </div>
   );
 };
+
 const NonMemoizedMarkdown = ({ children }: { children: string }) => {
   const components: Partial<Components> = {
     code: (props) => {
@@ -114,7 +115,7 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
 
       return isInline || !match ? (
         <code
-          className={`${props.className} text-sm bg-zinc-100 dark:bg-zinc-800  py-0.5 px-1 rounded-md`}
+          className={`${props.className} text-sm bg-zinc-100 dark:bg-zinc-800 py-0.5 px-1 rounded-md max-w-2xl w-auto overflow-x-auto`}
           {...props}
         >
           {props.children}
@@ -148,7 +149,7 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
     },
     strong: ({ node, children, ...props }) => {
       return (
-        <span className="font-semibold" {...props}>
+        <span className="font-semibold overflow-auto" {...props}>
           {children}
         </span>
       );
@@ -183,19 +184,20 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
         </h1>
       );
     },
-
+    p: ({ node, children, ...props }) => {
+      return (
+        <p
+          className="my-2 text-zinc-700 dark:text-zinc-300 leading-relaxed"
+          {...props}
+        >
+          {children}
+        </p>
+      );
+    },
     h2: ({ node, children, ...props }) => {
       return (
         <h2
-          className="
-            text-responsive 
-            font-semibold 
-            mt-5 
-            mb-3 
-            text-zinc-900 
-            dark:text-zinc-100 
-            leading-tight
-          "
+          className="text-responsive font-semibold mt-5 mb-3 text-zinc-900 dark:text-zinc-100 leading-tight"
           {...props}
         >
           {children}
@@ -245,7 +247,7 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
     <ReactMarkdown
       rehypePlugins={[rehypeHighlight]}
       components={components}
-      className="w-full max-w-5xl"
+      className="w-full max-w-2xl break-words text-wrap gap-1"
     >
       {children}
     </ReactMarkdown>
