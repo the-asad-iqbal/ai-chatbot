@@ -9,8 +9,10 @@ export const ImageToolCallSkeleton: React.FC = () => (
             <Skeleton className="h-10 w-10 rounded-full mb-2" />
             <Skeleton className="h-10 w-52 mb-2" />
         </div>
-        <Skeleton className="h-96 w-[550px]" />
-        <Skeleton className="h-50 w-[200px]" />
+        <Skeleton style={{
+            width: 654,
+            height: 490,
+        }} />
     </div>
 )
 
