@@ -56,6 +56,11 @@ export async function saveChat({
   title: string;
 }) {
   try {
+    const userExists = await db.select().from(user).where(eq(user.id, userId));
+    if (!userExists) {
+      console.error(`User with ID ${userId} does not exist`);
+      throw new Error(`User with ID ${userId} does not exist`);
+    }
     return await db.insert(chat).values({
       id,
       createdAt: new Date(),
@@ -63,7 +68,7 @@ export async function saveChat({
       title,
     });
   } catch (error) {
-    console.error('Failed to save chat in database');
+    console.error('Failed to save chat in database', error);
     throw error;
   }
 }

@@ -38,7 +38,7 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
     {
       title: 'Generate Image',
       label: 'Creative AI Art',
-      action: 'Generate an image of a futuristic cityscape at sunset in the style of Van Gogh.',
+      action: 'Generate an image of a futuristic cityscape at sunset.',
       icon: ImageIcon,
     },
     {
