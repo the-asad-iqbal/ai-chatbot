@@ -26,7 +26,6 @@ import { ArrowUpIcon, PaperclipIcon, StopIcon } from './icons';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from './ui/button';
 import { SuggestedActions } from './suggested-actions';
-import { useIsMobile } from '@/hooks/use-mobile';
 import equal from 'fast-deep-equal';
 
 function PureMultimodalInput({
@@ -41,7 +40,6 @@ function PureMultimodalInput({
   setMessages,
   append,
   handleSubmit,
-  className,
 }: {
   chatId: string;
   input: string;
@@ -76,7 +74,7 @@ function PureMultimodalInput({
   const adjustHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.rows = 1
+      textareaRef.current.rows = 2
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
     }
   };
@@ -109,9 +107,7 @@ function PureMultimodalInput({
 
     setInput(event.target.value);
     adjustHeight();
-    if (useIsMobile()) {
-      textareaRef.current!.addEventListener('input', adjustHeight);
-    }
+    textareaRef.current!.addEventListener('input', adjustHeight);
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
