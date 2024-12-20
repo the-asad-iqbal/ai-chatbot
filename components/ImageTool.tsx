@@ -23,7 +23,6 @@ export const ImageToolCallSkeleton: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             className="w-full max-w-[720px] mx-auto p-4 bg-background border rounded-lg shadow-sm"
         >
-            {/* Header Section */}
             <div className="flex gap-3 items-center h-10 mb-4">
                 <div className="flex items-center gap-2 animate-pulse">
                     <div className="relative size-10 rounded-full overflow-hidden shrink-0">
@@ -50,16 +49,13 @@ export const ImageToolCallSkeleton: React.FC = () => {
                 </div>
             </div>
 
-            {/* Image Container Section */}
             <div className="w-full max-w-[654px] mx-auto">
                 <div className="relative w-full aspect-[4/3]">
                     <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 to-zinc-800 rounded-lg overflow-hidden">
-                        {/* Loading Animation Container */}
                         <div className="absolute inset-0 flex items-center justify-center">
                             <ProgressRing />
                         </div>
 
-                        {/* Shimmer Effect */}
                         <motion.div
                             className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
                             animate={{
@@ -78,7 +74,6 @@ export const ImageToolCallSkeleton: React.FC = () => {
     );
 };
 
-// Enhanced ProgressRing component with centered icon
 const ProgressRing: React.FC = () => {
     const controls = useAnimation();
 
@@ -161,9 +156,8 @@ const ExpandablePrompt: React.FC<{ text: string }> = ({ text }) => {
                             {text}
                         </p>
 
-                        {/* Gradient fade for collapsed state */}
                         {!isExpanded && shouldShowToggle && (
-                            <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-background to-transparent" />
+                            <div className="absolute bottom-0 inset-x-0 h-4 bg-gradient-to-t from-background to-transparent" />
                         )}
                     </div>
 
@@ -198,7 +192,7 @@ const ExpandablePrompt: React.FC<{ text: string }> = ({ text }) => {
                                             animate={{ scale: 1 }}
                                             exit={{ scale: 0 }}
                                         >
-                                            <Check className="h-4 w-4" />
+                                            <Check className="size-4" />
                                         </motion.div>
                                     ) : (
                                         <motion.div
@@ -207,7 +201,7 @@ const ExpandablePrompt: React.FC<{ text: string }> = ({ text }) => {
                                             animate={{ scale: 1 }}
                                             exit={{ scale: 0 }}
                                         >
-                                            <Copy className="h-4 w-4" />
+                                            <Copy className="size-4" />
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
@@ -231,19 +225,7 @@ export const ImageToolResponse: React.FC<{
         prompt?: string;
     };
 }> = ({ result }) => {
-    const [isCopied, setIsCopied] = useState(false);
     const [isImageLoaded, setIsImageLoaded] = useState(false);
-
-    const copyPrompt = async (text: string) => {
-        try {
-            await navigator.clipboard.writeText(text);
-            toast.success('Prompt copied to clipboard');
-            setIsCopied(true);
-            setTimeout(() => setIsCopied(false), 1000);
-        } catch (error) {
-            toast.error('Failed to copy prompt');
-        }
-    };
 
     return (
         <motion.div

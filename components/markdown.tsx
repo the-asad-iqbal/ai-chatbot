@@ -51,7 +51,7 @@ const CodeBlock = ({
       </div>
       <pre
         className={`
-          ${className} text-sm min-w-full w-full overflow-x-auto bg-zinc-900 p-4 rounded-b-lg text-wrap
+          ${className} text-sm min-size-full overflow-x-auto bg-zinc-900 p-4 rounded-b-lg text-wrap
         `}
       >
         <code className={`language-${language}`}>{children}</code>

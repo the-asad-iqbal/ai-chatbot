@@ -259,7 +259,6 @@ export function Weather({
           }
         )}
       >
-        {/* Main Temperature Section */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -311,7 +310,7 @@ export function Weather({
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="text-sm">Today's highest temperature</p>
+                  <p className="text-sm">Today&apos;s highest temperature</p>
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
@@ -322,7 +321,7 @@ export function Weather({
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="text-sm">Today's lowest temperature</p>
+                  <p className="text-sm">Today&apos;s lowest temperature</p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -393,7 +392,7 @@ export function Weather({
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="flex items-center gap-2 text-blue-50/80 text-xs cursor-pointer hover:text-blue-50 transition-colors">
-                <Sunrise className="h-4 w-4" />
+                <Sunrise className="size-4" />
                 Sunrise: {format(new Date(weatherAtLocation.daily.sunrise[0]), 'h:mm a')}
               </div>
             </TooltipTrigger>
@@ -404,7 +403,7 @@ export function Weather({
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="flex items-center gap-2 text-blue-50/80 text-xs cursor-pointer hover:text-blue-50 transition-colors">
-                <Sunset className="h-4 w-4" />
+                <Sunset className="size-4" />
                 Sunset: {format(new Date(weatherAtLocation.daily.sunset[0]), 'h:mm a')}
               </div>
             </TooltipTrigger>
