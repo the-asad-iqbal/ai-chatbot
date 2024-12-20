@@ -404,3 +404,12 @@ export async function addMemory({
     );
   }
 }
+
+export async function userMemories({ id }: { id: string }) {
+  try {
+    return await db.select().from(Memory).where(eq(Memory.userId, id));
+  } catch (error) {
+    console.error('Failed to get user memories from database');
+    throw error;
+  }
+}

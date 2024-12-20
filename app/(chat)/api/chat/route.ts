@@ -28,6 +28,7 @@ import {
   saveDocument,
   saveMessages,
   saveSuggestions,
+  userMemories,
 } from '@/lib/db/queries';
 import type { Suggestion } from '@/lib/db/schema';
 import {
@@ -45,7 +46,8 @@ type AllowedTools =
   | 'updateDocument'
   | 'requestSuggestions'
   | 'getWeather'
-  | 'generateImage';
+  | 'generateImage'
+  | 'updateMemory'
 
 const blocksTools: AllowedTools[] = [
   'createDocument',
@@ -57,10 +59,13 @@ const weatherTools: AllowedTools[] = ['getWeather'];
 
 const generateImageTools: AllowedTools[] = ['generateImage'];
 
+const updateMemoryTools: AllowedTools[] = ['updateMemory'];
+
 const allTools: AllowedTools[] = [
   ...blocksTools,
   ...weatherTools,
   ...generateImageTools,
+  ...updateMemoryTools,
 ];
 
 export async function POST(request: Request) {
@@ -76,8 +81,6 @@ export async function POST(request: Request) {
   if (!session || !session.user || !session.user.id) {
     return new Response('Unauthorized', { status: 401 });
   }
-
-  const { name } = session.user
 
   const model = models.find((model) => model.id === modelId);
 
@@ -107,6 +110,9 @@ export async function POST(request: Request) {
     ],
   });
 
+  const userMemory = await userMemories({ id: session.user.id });
+  const userProfile = `User Profile: ${JSON.stringify(userMemory)}`;
+
   const together = new Together({ apiKey: process.env.TOGETHER_API_KEY });
 
   return createDataStreamResponse({
@@ -118,7 +124,7 @@ export async function POST(request: Request) {
 
       const result = streamText({
         model: customModel(model.apiIdentifier),
-        system: systemPrompt + "User Name: " + name,
+        system: systemPrompt + userProfile,
         messages: coreMessages,
         maxSteps: 5,
         temperature: 0.7,
@@ -396,7 +402,7 @@ export async function POST(request: Request) {
               }
             }
           },
-          memorize: {
+          updateMemory: {
             description: 'Memorizes something for later user for that user. Like personalizations etc...',
             parameters: z.object({
               text: z
@@ -404,8 +410,6 @@ export async function POST(request: Request) {
                 .describe('The text to be memorized. Max 300 characters.'),
             }),
             execute: async ({ text }) => {
-              console.log(text);
-
               const res = await addMemory({ text, userId: session.user?.id ?? '' });
               if (res) {
                 return {

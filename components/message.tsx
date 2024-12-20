@@ -21,6 +21,7 @@ import { Button } from './ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { MessageEditor } from './message-editor';
 import { ImageToolCallSkeleton, ImageToolResponse } from './ImageTool';
+import { UpdateMemoryToolResult, UpdateMemoryToolSkeleton } from './updated-memory-tool';
 
 const PurePreviewMessage = ({
   chatId,
@@ -74,8 +75,13 @@ const PurePreviewMessage = ({
           },
         )}
       >
-        {message.role === 'assistant' && !hasPreviousToolInvocation && (
-          <div className="size-8 flex items-center rounded-full justify-center ring-1 shrink-0 ring-border dark:text-white text-purple-500">
+        {message.role === 'assistant' && (
+          <div
+            className="size-8 flex items-center rounded-full justify-center ring-1 shrink-0 ring-border dark:text-white text-purple-500"
+            style={{
+              opacity: hasPreviousToolInvocation ? 0 : 1,
+            }}
+          >
             <motion.div
               animate={isLoading ? {
                 scale: [1, 1.2, 1],
@@ -186,9 +192,9 @@ const PurePreviewMessage = ({
                         />
                       ) : toolName === 'generateImage' ? (
                         <ImageToolResponse result={result} />
-                      ) : (
-                        <pre>{JSON.stringify(result, null, 2)}</pre>
-                      )}
+                      ) : toolName === 'updateMemory' ? (
+                        <UpdateMemoryToolResult savedMemory={args} />
+                      ) : null}
                     </div>
                   );
                 }
@@ -224,6 +230,8 @@ const PurePreviewMessage = ({
                       />
                     ) : toolName === 'generateImage' ? (
                       <ImageToolCallSkeleton key={toolCallId + state} />
+                    ) : toolName === 'updateMemory' ? (
+                      <UpdateMemoryToolSkeleton key={toolCallId + state} />
                     ) : null}
                   </div>
                 );
@@ -276,7 +284,7 @@ export const ThinkingMessage = () => {
     >
       <div
         className={cx(
-          'flex gap-4 group-data-[role=user]/message:px-3 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:py-2 rounded-xl',
+          'flex gap-4 group-data-[role=user]/message:px-3 w-full group-data-[role=user]/message:w-fit group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl group-data-[role=user]/message:py-2 rounded-xl items-center',
           {
             'group-data-[role=user]/message:bg-muted': true,
           },
