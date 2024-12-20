@@ -24,6 +24,7 @@ import { ArrowUpIcon, PaperclipIcon, StopIcon } from './icons';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from './ui/button';
 import { SuggestedActions } from './suggested-actions';
+import { ToolsPopover } from './tools-popover';
 import equal from 'fast-deep-equal';
 
 function PureMultimodalInput({
@@ -63,6 +64,11 @@ function PureMultimodalInput({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
   const [localInput, setLocalInput] = useState(input);
+  const [selectedTool, setSelectedTool] = useState<string | null>(null);
+
+  const handleToolSelect = (toolId: string) => {
+    setSelectedTool(toolId);
+  };
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -74,6 +80,41 @@ function PureMultimodalInput({
     setLocalInput(input);
   }, [input]);
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.rows = 2;
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
+    }
+  }, [width]);
+
+  useEffect(() => {
+    if (selectedTool === null) {
+      return;
+    }
+
+    const newInput = selectedTool + ' ' + localInput;
+    setLocalInput(newInput);
+    setInput(newInput);
+  }, [selectedTool]);
+
+  // Add these helper functions at the beginning of PureMultimodalInput
+  const isToolCommand = (text: string, position: number): { start: number; end: number } | null => {
+    const tools = ['imagen', 'weather']; // Make sure this matches your tools array
+    for (const tool of tools) {
+      const startPos = text.toLowerCase().indexOf(tool.toLowerCase());
+      if (startPos !== -1 && position >= startPos && position < startPos + tool.length) {
+        return { start: startPos, end: startPos + tool.length };
+      }
+    }
+    return null;
+  };
+
+  const removeToolFromInput = (text: string, toolId: string): string => {
+    const toolIndex = text.toLowerCase().indexOf(toolId.toLowerCase());
+    if (toolIndex === -1) return text;
+    return text.slice(0, toolIndex) + text.slice(toolIndex + toolId.length);
+  };
   const adjustHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -84,11 +125,24 @@ function PureMultimodalInput({
 
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = event.target.value;
-    setLocalInput(newValue);
-    setInput(newValue);
+    const prevValue = localInput;
+    const selectionStart = event.target.selectionStart;
+
+    // Check if user is trying to modify a tool command
+    const toolCommand = isToolCommand(prevValue, selectionStart - 1);
+
+    if (toolCommand && prevValue.length > newValue.length) {
+      // If user is trying to delete part of a tool command, remove the entire command
+      const toolText = prevValue.slice(toolCommand.start, toolCommand.end);
+      setSelectedTool(null);
+      setLocalInput(removeToolFromInput(prevValue, toolText));
+      setInput(removeToolFromInput(prevValue, toolText));
+    } else {
+      setLocalInput(newValue);
+      setInput(newValue);
+    }
     adjustHeight();
   };
-
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
 
@@ -100,10 +154,7 @@ function PureMultimodalInput({
     setAttachments([]);
     setLocalInput('');
     setInput('');
-
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-    }
+    setSelectedTool(null);
   }, [localInput, attachments, chatId, handleSubmit, setAttachments, setInput]);
 
   const uploadFile = async (file: File) => {
@@ -158,6 +209,18 @@ function PureMultimodalInput({
     },
     [setAttachments],
   );
+
+  const renderHighlightedInput = () => {
+    let displayText = localInput;
+    const tools = ['imagen', 'weather'];
+
+    for (const tool of tools) {
+      const regex = new RegExp(tool, 'gi');
+      displayText = displayText.replace(regex, `<span class="highlightedTool">${tool}</span>`);
+    }
+
+    return displayText;
+  };
 
   return (
     <div className="relative w-full flex flex-col gap-4">
@@ -217,10 +280,38 @@ function PureMultimodalInput({
                 submitForm();
               }
             }
+
+            if (event.key === 'Backspace') {
+              const toolCommand = isToolCommand(localInput, event.currentTarget.selectionStart);
+              if (toolCommand) {
+                event.preventDefault();
+                const toolText = localInput.slice(toolCommand.start, toolCommand.end);
+                setSelectedTool(null);
+                setLocalInput(removeToolFromInput(localInput, toolText));
+                setInput(removeToolFromInput(localInput, toolText));
+              }
+            }
+          }}
+        />
+        <div
+          className="absolute top-0 left-0 p-3 pointer-events-none text-sm sm:text-base"
+          dangerouslySetInnerHTML={{ __html: renderHighlightedInput() }}
+          style={{
+            color: 'transparent',
+            userSelect: 'none',
+            whiteSpace: 'pre-wrap',
+            wordWrap: 'break-word'
           }}
         />
         <div className="flex flex-row justify-between items-center w-full gap-4 max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto">
-          <AttachmentsButton fileInputRef={fileInputRef} isLoading={isLoading} />
+          <div className="flex gap-2">
+            <AttachmentsButton fileInputRef={fileInputRef} isLoading={isLoading} />
+            <ToolsPopover
+              selectedTool={selectedTool}
+              onToolSelect={handleToolSelect}
+              isLoading={isLoading}
+            />
+          </div>
 
           {isLoading ? (
             <StopButton stop={stop} setMessages={setMessages} />

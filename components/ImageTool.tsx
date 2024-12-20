@@ -94,7 +94,6 @@ const ProgressRing: React.FC = () => {
 
     return (
         <div className="relative size-16">
-            {/* Progress Ring SVG */}
             <svg className="w-full h-full" viewBox="0 0 100 100">
                 <circle
                     cx="50"
@@ -116,10 +115,8 @@ const ProgressRing: React.FC = () => {
                     animate={controls}
                 />
             </svg>
-
-            {/* Centered Icon with Animation */}
             <motion.div
-                className="absolute flex items-center justify-center"
+                className='absolute inset-0 flex items-center justify-center'
                 animate={{
                     scale: [1, 1.2, 1],
                     rotate: [0, 360],
@@ -135,9 +132,11 @@ const ProgressRing: React.FC = () => {
         </div>
     );
 };
+
 const ExpandablePrompt: React.FC<{ text: string }> = ({ text }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isCopied, setIsCopied] = useState(false);
+    const shouldShowToggle = text.length > 75;
 
     const copyPrompt = async (text: string) => {
         try {
@@ -154,22 +153,31 @@ const ExpandablePrompt: React.FC<{ text: string }> = ({ text }) => {
         <div className="flex flex-col gap-2 mt-1">
             <div className="flex items-start justify-between gap-2">
                 <div className="flex-1">
-                    <p className={cn(
-                        "text-xs text-muted-foreground transition-all",
-                        !isExpanded && "line-clamp-2"
+                    <div className={cn(
+                        "relative",
+                        !isExpanded && shouldShowToggle && "max-h-[2.4em] overflow-hidden"
                     )}>
-                        {text}
-                    </p>
-                    {text.length > 100 && (
+                        <p className="text-xs text-muted-foreground">
+                            {text}
+                        </p>
+
+                        {/* Gradient fade for collapsed state */}
+                        {!isExpanded && shouldShowToggle && (
+                            <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-background to-transparent" />
+                        )}
+                    </div>
+
+                    {shouldShowToggle && (
                         <Button
                             variant="link"
-                            className="text-xs h-auto p-0 text-muted-foreground hover:text-primary"
+                            className="text-xs h-auto p-0 mt-1 text-muted-foreground hover:text-primary"
                             onClick={() => setIsExpanded(!isExpanded)}
                         >
                             {isExpanded ? 'Show less' : 'Show more'}
                         </Button>
                     )}
                 </div>
+
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
