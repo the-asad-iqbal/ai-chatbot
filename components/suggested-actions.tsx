@@ -37,20 +37,20 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
     },
     {
       title: 'Generate Image',
-      label: 'Creative AI Art',
-      action: 'Generate an image of a futuristic cityscape at sunset.',
+      label: '3D Art',
+      action: 'World biggest shoe, placed in the desert, trees growing inside the shoe.',
       icon: ImageIcon,
     },
     {
-      title: 'Essay',
-      label: 'About Allama Iqbal',
-      action: 'Help me draft a shortest essay about Allama Muhammad Iqbal.',
-      icon: BookOpenIcon,
+      title: 'Generate Image',
+      label: 'Imagen',
+      action: 'A cute and lively rabbit sitting in a natural setting.',
+      icon: ImageIcon,
     },
     {
       title: 'Programming',
-      label: 'Code Snippet',
-      action: 'Write a JavaScript function to reverse a string?',
+      label: 'Write Code',
+      action: 'Write a JavaScript function to reverse a string? The function should take a string as input and return the reversed version.',
       icon: CodeXml,
     },
     {

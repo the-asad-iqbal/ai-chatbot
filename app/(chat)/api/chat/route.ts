@@ -127,7 +127,7 @@ export async function POST(request: Request) {
         system: systemPrompt + userProfile,
         messages: coreMessages,
         maxSteps: 5,
-        temperature: 0.7,
+        temperature: 1,
         experimental_activeTools: allTools,
         tools: {
           getWeather: {
