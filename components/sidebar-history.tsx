@@ -90,7 +90,7 @@ const PureChatItem = ({
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={isActive}>
-        <Link prefetch href={`/chat/${chat.id}`} onClick={() => setOpenMobile(false)}>
+        <Link prefetch href={`/chat/${chat.id}`} onClick={() => setOpenMobile(false)} id={chat.id}>
           <span className='font-normal'>{chat.title}</span>
         </Link>
       </SidebarMenuButton>
@@ -167,7 +167,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
   const { id } = useParams();
   const pathname = usePathname();
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(20);
+  const [pageSize] = useState(15);
   const [allChats, setAllChats] = useState<Chat[]>([]);
 
   const {
@@ -179,9 +179,16 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
   });
 
   useEffect(() => {
-    if (history?.chats) {
-      setAllChats((prevChats) => [...prevChats, ...history.chats]);
-    }
+    if (!history?.chats?.length) return;
+
+    setAllChats(prevChats => {
+      const existingIds = new Set(prevChats.map(chat => chat.id));
+      const newChats = history.chats.filter(chat => !existingIds.has(chat.id));
+
+      if (newChats.length === 0) return prevChats;
+
+      return [...prevChats, ...newChats];
+    });
   }, [history]);
 
   useEffect(() => {

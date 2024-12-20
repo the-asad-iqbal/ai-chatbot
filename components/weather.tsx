@@ -3,6 +3,8 @@
 import cx from 'classnames';
 import { format, isWithinInterval } from 'date-fns';
 import { useEffect, useState } from 'react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Moon, Sun, Sunrise, Sunset } from 'lucide-react';
 
 interface WeatherAtLocation {
   latitude: number;
@@ -232,13 +234,10 @@ export function Weather({
   }, []);
 
   const hoursToShow = isMobile ? 5 : 6;
-
-  // Find the index of the current time or the next closest time
   const currentTimeIndex = weatherAtLocation.hourly.time.findIndex(
     (time) => new Date(time) >= new Date(weatherAtLocation.current.time),
   );
 
-  // Slice the arrays to get the desired number of items
   const displayTimes = weatherAtLocation.hourly.time.slice(
     currentTimeIndex,
     currentTimeIndex + hoursToShow,
@@ -249,63 +248,172 @@ export function Weather({
   );
 
   return (
-    <div
-      className={cx(
-        'flex flex-col gap-4 rounded-2xl p-4 skeleton-bg max-w-[500px]',
-        {
-          'bg-blue-400': isDay,
-        },
-        {
-          'bg-indigo-900': !isDay,
-        },
-      )}
-    >
-      <div className="flex flex-row justify-between items-center">
-        <div className="flex flex-row gap-2 items-center">
-          <div
-            className={cx(
-              'size-10 rounded-full skeleton-div',
-              {
-                'bg-yellow-300': isDay,
-              },
-              {
-                'bg-indigo-100': !isDay,
-              },
-            )}
-          />
-          <div className="text-4xl font-medium text-blue-50">
-            {n(weatherAtLocation.current.temperature_2m)}
-            {weatherAtLocation.current_units.temperature_2m}
+    <TooltipProvider>
+      <div
+        className={cx(
+          'flex flex-col gap-6 rounded-3xl p-6 shadow-lg backdrop-blur-sm transition-all duration-300',
+          'border border-opacity-20',
+          {
+            'bg-gradient-to-br from-blue-400 to-blue-500 border-white': isDay,
+            'bg-gradient-to-br from-indigo-900 to-indigo-800 border-indigo-300': !isDay,
+          }
+        )}
+      >
+        {/* Main Temperature Section */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div
+                    className={cx(
+                      'size-12 rounded-full shadow-lg flex items-center justify-center cursor-pointer',
+                      'transform transition-all duration-300 hover:scale-110',
+                      {
+                        'bg-yellow-300 shadow-yellow-200/50': isDay,
+                        'bg-indigo-100 shadow-indigo-400/30': !isDay,
+                      }
+                    )}
+                  >
+                    {isDay ? (
+                      <Sun className="h-8 w-8 text-yellow-600" />
+                    ) : (
+                      <Moon className="h-8 w-8 text-indigo-600" />
+                    )}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-sm">Current conditions: {isDay ? 'Daytime' : 'Nighttime'}</p>
+                </TooltipContent>
+              </Tooltip>
+              <div className="flex flex-col">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="text-5xl font-bold text-white tracking-tight cursor-pointer">
+                      {Math.round(weatherAtLocation.current.temperature_2m)}°
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-sm">Current temperature</p>
+                  </TooltipContent>
+                </Tooltip>
+                <div className="text-blue-50/80 text-sm">
+                  {format(new Date(weatherAtLocation.current.time), 'EEEE, h:mm a')}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-col items-end text-blue-50">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1 cursor-pointer">
+                    <span className="text-blue-50/80 text-sm">High</span>
+                    <span className="font-semibold">{Math.round(currentHigh)}°</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-sm">Today's highest temperature</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1 cursor-pointer">
+                    <span className="text-blue-50/80 text-sm">Low</span>
+                    <span className="font-semibold">{Math.round(currentLow)}°</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-sm">Today's lowest temperature</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
           </div>
         </div>
 
-        <div className="text-blue-50">{`H:${n(currentHigh)}° L:${n(currentLow)}°`}</div>
-      </div>
-
-      <div className="flex flex-row justify-between">
-        {displayTimes.map((time, index) => (
-          <div key={time} className="flex flex-col items-center gap-1">
-            <div className="text-blue-100 text-xs">
-              {format(new Date(time), 'ha')}
-            </div>
-            <div
-              className={cx(
-                'size-6 rounded-full skeleton-div',
-                {
-                  'bg-yellow-300': isDay,
-                },
-                {
-                  'bg-indigo-200': !isDay,
-                },
-              )}
-            />
-            <div className="text-blue-50 text-sm">
-              {n(displayTemperatures[index])}
-              {weatherAtLocation.hourly_units.temperature_2m}
-            </div>
+        {/* Hourly Forecast Section */}
+        <div className="flex flex-col gap-4">
+          <div className="text-blue-50/80 text-xs font-medium uppercase tracking-wider">
+            Hourly Forecast
           </div>
-        ))}
+          <div className="grid grid-cols-5 md:grid-cols-6 gap-4">
+            {displayTimes.map((time, index) => (
+              <Tooltip key={time}>
+                <TooltipTrigger asChild>
+                  <div
+                    className={cx(
+                      'flex flex-col items-center gap-2 p-2 rounded-lg transition-all duration-300 cursor-pointer',
+                      'hover:bg-white/10'
+                    )}
+                  >
+                    <div className="text-blue-50/90 text-sm font-medium">
+                      {format(new Date(time), 'h a')}
+                    </div>
+                    <div
+                      className={cx(
+                        'size-8 rounded-full flex items-center justify-center',
+                        'transform transition-all duration-300',
+                        {
+                          'bg-yellow-300/90':
+                            isWithinInterval(new Date(time), {
+                              start: new Date(weatherAtLocation.daily.sunrise[0]),
+                              end: new Date(weatherAtLocation.daily.sunset[0]),
+                            }),
+                          'bg-indigo-200/90': !isWithinInterval(new Date(time), {
+                            start: new Date(weatherAtLocation.daily.sunrise[0]),
+                            end: new Date(weatherAtLocation.daily.sunset[0]),
+                          }),
+                        }
+                      )}
+                    >
+                      {isWithinInterval(new Date(time), {
+                        start: new Date(weatherAtLocation.daily.sunrise[0]),
+                        end: new Date(weatherAtLocation.daily.sunset[0]),
+                      }) ? (
+                        <Sun className="h-5 w-5 text-yellow-600" />
+                      ) : (
+                        <Moon className="h-5 w-5 text-indigo-600" />
+                      )}
+                    </div>
+                    <div className="text-white font-semibold">
+                      {Math.round(displayTemperatures[index])}°
+                    </div>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-sm">
+                    {format(new Date(time), 'h:mm a')}: {Math.round(displayTemperatures[index])}°C
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
+        </div>
+
+        {/* Sunrise/Sunset Info */}
+        <div className="flex justify-between items-center pt-2 border-t border-white/10">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center gap-2 text-blue-50/80 text-xs cursor-pointer hover:text-blue-50 transition-colors">
+                <Sunrise className="h-4 w-4" />
+                Sunrise: {format(new Date(weatherAtLocation.daily.sunrise[0]), 'h:mm a')}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-sm">First light of the day</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="flex items-center gap-2 text-blue-50/80 text-xs cursor-pointer hover:text-blue-50 transition-colors">
+                <Sunset className="h-4 w-4" />
+                Sunset: {format(new Date(weatherAtLocation.daily.sunset[0]), 'h:mm a')}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-sm">Last light of the day</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 }

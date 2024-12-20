@@ -359,12 +359,11 @@ export async function POST(request: Request) {
             }),
             execute: async ({ prompt }) => {
               try {
-                // Generate the image in base64 using Together AI
                 const response = await together.images.create({
-                  model: "black-forest-labs/FLUX.1-schnell-Free", // Model identifier
+                  model: "black-forest-labs/FLUX.1-schnell-Free",
                   prompt: prompt,
-                  width: 1024,
-                  height: 768,
+                  width: 1440,
+                  height: 1024,
                   steps: 4,
                   n: 1,
                   response_format: "base64",

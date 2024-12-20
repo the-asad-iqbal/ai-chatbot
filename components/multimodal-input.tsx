@@ -18,10 +18,8 @@ import {
   memo,
 } from 'react';
 import { toast } from 'sonner';
-import { useLocalStorage, useWindowSize } from 'usehooks-ts';
-
+import { useWindowSize } from 'usehooks-ts';
 import { sanitizeUIMessages } from '@/lib/utils';
-
 import { ArrowUpIcon, PaperclipIcon, StopIcon } from './icons';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from './ui/button';
@@ -64,67 +62,49 @@ function PureMultimodalInput({
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
+  const [localInput, setLocalInput] = useState(input);
 
   useEffect(() => {
     if (textareaRef.current) {
       adjustHeight();
     }
   }, []);
+
+  useEffect(() => {
+    setLocalInput(input);
+  }, [input]);
 
   const adjustHeight = () => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
-      textareaRef.current.rows = 2
+      textareaRef.current.rows = 2;
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight + 2}px`;
     }
   };
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      setInput(textareaRef.current.value);
-      adjustHeight();
-    }
-    // Only run once after hydration
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (event.target.value === '') {
-      textareaRef.current!.rows = 2;
-    }
-
-    setInput(event.target.value);
+    const newValue = event.target.value;
+    setLocalInput(newValue);
+    setInput(newValue);
     adjustHeight();
-    textareaRef.current!.addEventListener('input', adjustHeight);
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
 
-  const submitForm = useCallback(() => {
-    if (!textareaRef.current) return;
+  const submitForm = useCallback(async () => {
+    if (localInput.trim() === '') return;
 
+    await handleSubmit(undefined, { experimental_attachments: attachments });
     window.history.replaceState({}, '', `/chat/${chatId}`);
-
-    handleSubmit(undefined, {
-      experimental_attachments: attachments,
-    });
-
     setAttachments([]);
+    setLocalInput('');
     setInput('');
-    textareaRef.current!.rows = 2;
 
-    if (width && width > 768) {
-      textareaRef.current?.focus();
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
     }
-  }, [
-    attachments,
-    handleSubmit,
-    setAttachments,
-    setInput,
-    width,
-    chatId,
-  ]);
+  }, [localInput, attachments, chatId, handleSubmit, setAttachments, setInput]);
 
   const uploadFile = async (file: File) => {
     const formData = new FormData();
@@ -225,7 +205,7 @@ function PureMultimodalInput({
           spellCheck={false}
           className="dark:bg-[#161616] bg-[#494949] text-white w-full resize-none outline-none transition-all duration-200 ease-in-out overflow-auto p-3 max-h-[200px] h-auto min-h-[50px] border-none no-scrollbar text-sm sm:text-base"
           placeholder="Ask me anything!"
-          value={input}
+          value={localInput}
           onChange={handleInput}
           onKeyDown={(event) => {
             if (event.key === 'Enter' && !event.shiftKey) {
@@ -246,14 +226,12 @@ function PureMultimodalInput({
             <StopButton stop={stop} setMessages={setMessages} />
           ) : (
             <SendButton
-              input={input}
+              input={localInput}
               submitForm={submitForm}
               uploadQueue={uploadQueue}
             />
           )}
         </div>
-
-
       </div>
     </div>
   );
@@ -265,7 +243,6 @@ export const MultimodalInput = memo(
     if (prevProps.input !== nextProps.input) return false;
     if (prevProps.isLoading !== nextProps.isLoading) return false;
     if (!equal(prevProps.attachments, nextProps.attachments)) return false;
-
     return true;
   },
 );
@@ -333,7 +310,7 @@ function PureSendButton({
         event.preventDefault();
         submitForm();
       }}
-      disabled={input.length === 0 || uploadQueue.length > 0}
+      disabled={input.trim().length === 0 || uploadQueue.length > 0}
     >
       <ArrowUpIcon size={14} />
     </Button>
@@ -343,6 +320,6 @@ function PureSendButton({
 const SendButton = memo(PureSendButton, (prevProps, nextProps) => {
   if (prevProps.uploadQueue.length !== nextProps.uploadQueue.length)
     return false;
-  if (!prevProps.input !== !nextProps.input) return false;
+  if (prevProps.input !== nextProps.input) return false;
   return true;
 });
