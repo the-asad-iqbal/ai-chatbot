@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
-import { ImageIcon, DownloadIcon, Mountain, Copy, Check, Sparkles } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
+import { ImageIcon, DownloadIcon, Copy, Check } from 'lucide-react'
 import { motion, useAnimation, AnimatePresence } from "framer-motion"
 import Image from 'next/image'
 import { toast } from 'sonner'
@@ -89,7 +89,7 @@ const ProgressRing: React.FC = () => {
 
     return (
         <div className="relative size-16">
-            <svg className="w-full h-full" viewBox="0 0 100 100">
+            <svg className="size-full" viewBox="0 0 100 100">
                 <circle
                     cx="50"
                     cy="50"
@@ -253,8 +253,8 @@ export const ImageToolResponse: React.FC<{
                 <Image
                     src={result.url}
                     alt={result.prompt || "Generated Image"}
-                    width={1440}
-                    height={1024}
+                    width={1024}
+                    height={720}
                     className={cn(
                         "rounded-lg object-cover transition-opacity duration-300",
                         isImageLoaded ? "opacity-100" : "opacity-0"

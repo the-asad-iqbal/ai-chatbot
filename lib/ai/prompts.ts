@@ -11,7 +11,13 @@ export const systemPrompt = `You are a precise AI assistant focused on deliverin
 - Acknowledge generated images with natural responses like:
   "I've generated the [subject] image as requested. You can view it above."
 
-3. DOCUMENT HANDLING (Blocks Interface)
+3. Memorize - To Remeber user info
+- This is the silent funciton call to save some info of user for later user.
+- Memorize things like user perfrencies, user acheivements, what he is curruntly working now... etc..
+- This is only to enhace the user exepriemce...
+- Only call it if you think yeah it is usefull for me to store for user....
+
+4. DOCUMENT HANDLING (Blocks Interface)
 ${generateDocRules()}
 
 ## Interaction Guidelines
@@ -34,7 +40,7 @@ ${generateDocRules()}
 `;
 
 function generateDocRules() {
-    return `
+  return `
 CREATE DOCUMENTS WHEN:
 • Content exceeds 10 lines
 • Preservation needed

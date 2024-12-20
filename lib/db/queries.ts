@@ -15,6 +15,7 @@ import {
   type Message,
   message,
   vote,
+  Memory
 } from './schema';
 
 const client = postgres(process.env.POSTGRES_URL!);
@@ -25,7 +26,7 @@ export async function getUser(email: string): Promise<Array<User>> {
     return await db.select().from(user).where(eq(user.email, email));
   } catch (error) {
     console.error('Failed to get user from database');
-    throw error;
+    return [];
   }
 }
 
@@ -36,7 +37,7 @@ export async function createUser(name: string, email: string, password: string) 
   try {
     return await db.insert(user).values({ name, email, password: hash });
   } catch (error) {
-    console.error('Failed to create user in database');
+    console.error('Failed to create user in database', error);
     throw error;
   }
 }
@@ -359,5 +360,47 @@ export async function updateChatVisiblityById({
   } catch (error) {
     console.error('Failed to update chat visibility in database');
     throw error;
+  }
+}
+
+export async function addMemory({
+  text,
+  userId,
+}: {
+  text: string;
+  userId: string;
+}) {
+  try {
+    if (!text || text.trim().length === 0) {
+      throw new Error('Text cannot be empty');
+    }
+
+    if (text.length > 300) {
+      throw new Error('Text must not exceed 300 characters');
+    }
+
+    if (!userId) {
+      throw new Error('User ID is required');
+    }
+
+    const newMemory = await db.insert(Memory).values({
+      text,
+      createdAt: new Date(),
+      userId,
+    });
+
+    if (!newMemory) {
+      throw new Error('Failed to create memory');
+    }
+
+    return newMemory;
+  } catch (error) {
+    console.error('Error adding memory:', error);
+
+    throw new Error(
+      error instanceof Error
+        ? error.message
+        : 'Failed to add memory'
+    );
   }
 }

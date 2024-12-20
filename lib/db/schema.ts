@@ -10,7 +10,6 @@ import {
   foreignKey,
   boolean,
 } from 'drizzle-orm/pg-core';
-import { string } from 'zod';
 
 export const user = pgTable('User', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),
@@ -110,5 +109,18 @@ export const suggestion = pgTable(
     }),
   }),
 );
-
 export type Suggestion = InferSelectModel<typeof suggestion>;
+
+export const Memory = pgTable(
+  'Memory',
+  {
+    id: uuid('id').notNull().defaultRandom(),
+    text: text('text').notNull(),
+    createdAt: timestamp('createdAt').notNull(),
+    userId: uuid('userId')
+      .notNull()
+      .references(() => user.id),
+  }
+)
+
+export type Memory = InferSelectModel<typeof Memory>

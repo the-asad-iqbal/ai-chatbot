@@ -20,6 +20,7 @@ import { customModel } from '@/lib/ai';
 import { models } from '@/lib/ai/models';
 import { systemPrompt } from '@/lib/ai/prompts';
 import {
+  addMemory,
   deleteChatById,
   getChatById,
   getDocumentById,
@@ -76,6 +77,8 @@ export async function POST(request: Request) {
     return new Response('Unauthorized', { status: 401 });
   }
 
+  const { name } = session.user
+
   const model = models.find((model) => model.id === modelId);
 
   if (!model) {
@@ -115,9 +118,10 @@ export async function POST(request: Request) {
 
       const result = streamText({
         model: customModel(model.apiIdentifier),
-        system: systemPrompt,
+        system: systemPrompt + "User Name: " + name,
         messages: coreMessages,
         maxSteps: 5,
+        temperature: 0.7,
         experimental_activeTools: allTools,
         tools: {
           getWeather: {
@@ -392,6 +396,27 @@ export async function POST(request: Request) {
               }
             }
           },
+          memorize: {
+            description: 'Memorizes something for later user for that user. Like personalizations etc...',
+            parameters: z.object({
+              text: z
+                .string()
+                .describe('The text to be memorized. Max 300 characters.'),
+            }),
+            execute: async ({ text }) => {
+              console.log(text);
+
+              const res = await addMemory({ text, userId: session.user?.id ?? '' });
+              if (res) {
+                return {
+                  message: 'Text has been memorized successfully. Move one!',
+                };
+              }
+              return {
+                error: 'Failed to memorize text. Skip it, and move on!',
+              };
+            }
+          }
         },
         onFinish: async ({ response }) => {
           if (session.user?.id) {
