@@ -4,11 +4,12 @@ import type {
   CoreToolMessage,
   Message,
   ToolInvocation,
+  ToolContent,
 } from 'ai';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-import type { Message as DBMessage, Document } from '@/lib/db/schema';
+import type { Message as DBMessage } from '@/lib/db/schema';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -51,19 +52,41 @@ export function generateUUID(): string {
   });
 }
 
+interface ToolResult {
+  type: 'tool-result';
+  toolCallId: string;
+  result: string;
+}
+
+function isToolContent(content: any): content is ToolResult[] {
+  return Array.isArray(content) && content.every(item =>
+    typeof item === 'object' &&
+    item !== null &&
+    'type' in item &&
+    item.type === 'tool-result' &&
+    'toolCallId' in item &&
+    'result' in item
+  );
+}
+
 function addToolMessageToChat({
   toolMessage,
   messages,
 }: {
-  toolMessage: CoreToolMessage;
+  toolMessage: DBMessage & { role: 'tool' };
   messages: Array<Message>;
 }): Array<Message> {
+  const content = toolMessage.content;
+  if (!isToolContent(content)) {
+    return messages;
+  }
+
   return messages.map((message) => {
     if (message.toolInvocations) {
       return {
         ...message,
         toolInvocations: message.toolInvocations.map((toolInvocation) => {
-          const toolResult = toolMessage.content.find(
+          const toolResult = content.find(
             (tool) => tool.toolCallId === toolInvocation.toolCallId,
           );
 
@@ -84,13 +107,21 @@ function addToolMessageToChat({
   });
 }
 
+interface MessageContent {
+  type: 'text' | 'tool-call';
+  text?: string;
+  toolCallId?: string;
+  toolName?: string;
+  args?: Record<string, unknown>;
+}
+
 export function convertToUIMessages(
   messages: Array<DBMessage>,
 ): Array<Message> {
   return messages.reduce((chatMessages: Array<Message>, message) => {
     if (message.role === 'tool') {
       return addToolMessageToChat({
-        toolMessage: message as CoreToolMessage,
+        toolMessage: message as DBMessage & { role: 'tool' },
         messages: chatMessages,
       });
     }
@@ -101,15 +132,16 @@ export function convertToUIMessages(
     if (typeof message.content === 'string') {
       textContent = message.content;
     } else if (Array.isArray(message.content)) {
-      for (const content of message.content) {
-        if (content.type === 'text') {
+      const contents = message.content as MessageContent[];
+      for (const content of contents) {
+        if (content.type === 'text' && content.text) {
           textContent += content.text;
-        } else if (content.type === 'tool-call') {
+        } else if (content.type === 'tool-call' && content.toolCallId && content.toolName) {
           toolInvocations.push({
             state: 'call',
             toolCallId: content.toolCallId,
             toolName: content.toolName,
-            args: content.args,
+            args: content.args || {},
           });
         }
       }
@@ -201,16 +233,6 @@ export function sanitizeUIMessages(messages: Array<Message>): Array<Message> {
 export function getMostRecentUserMessage(messages: Array<CoreMessage>) {
   const userMessages = messages.filter((message) => message.role === 'user');
   return userMessages.at(-1);
-}
-
-export function getDocumentTimestampByIndex(
-  documents: Array<Document>,
-  index: number,
-) {
-  if (!documents) return new Date();
-  if (index > documents.length) return new Date();
-
-  return documents[index].createdAt;
 }
 
 export function getMessageIdFromAnnotations(message: Message) {

@@ -17,7 +17,7 @@ import {
 import { memo } from 'react';
 import equal from 'fast-deep-equal';
 
-export function PureMessageActions({
+export const PureMessageActions = memo(function PureMessageActions({
   chatId,
   message,
   vote,
@@ -165,7 +165,7 @@ export function PureMessageActions({
       </div>
     </TooltipProvider>
   );
-}
+});
 
 export const MessageActions = memo(
   PureMessageActions,
