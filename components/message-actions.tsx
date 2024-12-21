@@ -76,18 +76,18 @@ export function PureMessageActions({
                 toast.promise(upvote, {
                   loading: 'Upvoting Response...',
                   success: () => {
-                    mutate<Array<Vote>>(
+                    mutate<Vote[]>(
                       `/api/vote?chatId=${chatId}`,
                       (currentVotes) => {
-                        if (!currentVotes) return [];
-
-                        const votesWithoutCurrent = currentVotes.filter(
+                        const votes = currentVotes || [];
+                        const votesWithoutCurrent = votes.filter(
                           (vote) => vote.messageId !== message.id,
                         );
 
                         return [
                           ...votesWithoutCurrent,
                           {
+                            id: `${chatId}-${message.id}`,
                             chatId,
                             messageId: message.id,
                             isUpvoted: true,
@@ -130,18 +130,18 @@ export function PureMessageActions({
                 toast.promise(downvote, {
                   loading: 'Downvoting Response...',
                   success: () => {
-                    mutate<Array<Vote>>(
+                    mutate<Vote[]>(
                       `/api/vote?chatId=${chatId}`,
                       (currentVotes) => {
-                        if (!currentVotes) return [];
-
-                        const votesWithoutCurrent = currentVotes.filter(
+                        const votes = currentVotes || [];
+                        const votesWithoutCurrent = votes.filter(
                           (vote) => vote.messageId !== message.id,
                         );
 
                         return [
                           ...votesWithoutCurrent,
                           {
+                            id: `${chatId}-${message.id}`,
                             chatId,
                             messageId: message.id,
                             isUpvoted: false,
