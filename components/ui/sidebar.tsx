@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/tooltip';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar:state';
+const CHAT_VISIBILITY_COOKIE_NAME = 'chat:visibility';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = '16rem';
 const SIDEBAR_WIDTH_MOBILE = '18rem';
@@ -34,6 +35,9 @@ type SidebarContext = {
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
   toggleSidebar: () => void;
+  chatVisible: boolean;
+  setChatVisible: (visible: boolean) => void;
+  toggleChat: () => void;
 };
 
 const SidebarContext = React.createContext<SidebarContext | null>(null);
@@ -51,6 +55,7 @@ const SidebarProvider = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<'div'> & {
     defaultOpen?: boolean;
+    defaultChatVisible?: boolean;
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
   }
@@ -58,6 +63,7 @@ const SidebarProvider = React.forwardRef<
   (
     {
       defaultOpen = true,
+      defaultChatVisible = true,
       open: openProp,
       onOpenChange: setOpenProp,
       className,
@@ -69,6 +75,7 @@ const SidebarProvider = React.forwardRef<
   ) => {
     const isMobile = useIsMobile();
     const [openMobile, setOpenMobile] = React.useState(false);
+    const [chatVisible, setChatVisible] = React.useState(defaultChatVisible);
 
     // This is the internal state of the sidebar.
     // We use openProp and setOpenProp for control from outside the component.
@@ -95,6 +102,24 @@ const SidebarProvider = React.forwardRef<
         ? setOpenMobile((open) => !open)
         : setOpen((open) => !open);
     }, [isMobile, setOpen, setOpenMobile]);
+
+    const toggleChat = React.useCallback(() => {
+      setChatVisible((visible) => {
+        const newState = !visible;
+        document.cookie = `${CHAT_VISIBILITY_COOKIE_NAME}=${newState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+        return newState;
+      });
+    }, []);
+
+    // Load initial chat visibility state from cookie
+    React.useEffect(() => {
+      const cookies = document.cookie.split(';');
+      const chatCookie = cookies.find(cookie => cookie.trim().startsWith(`${CHAT_VISIBILITY_COOKIE_NAME}=`));
+      if (chatCookie) {
+        const chatState = chatCookie.split('=')[1] === 'true';
+        setChatVisible(chatState);
+      }
+    }, []);
 
     // Adds a keyboard shortcut to toggle the sidebar.
     React.useEffect(() => {
@@ -125,6 +150,9 @@ const SidebarProvider = React.forwardRef<
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        chatVisible,
+        setChatVisible,
+        toggleChat,
       }),
       [
         state,
@@ -134,6 +162,9 @@ const SidebarProvider = React.forwardRef<
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        chatVisible,
+        setChatVisible,
+        toggleChat,
       ],
     );
 
@@ -622,7 +653,7 @@ const SidebarMenuAction = React.forwardRef<
         'peer-data-[size=lg]/menu-button:top-2.5',
         'group-data-[collapsible=icon]:hidden',
         showOnHover &&
-          'group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0',
+        'group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0',
         className,
       )}
       {...props}

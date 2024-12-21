@@ -1,31 +1,22 @@
 import { ChatRequestOptions, Message } from 'ai';
 import { PreviewMessage, ThinkingMessage } from './message';
 import { Overview } from './overview';
-import { UIBlock } from './block';
 import { Dispatch, memo, SetStateAction, useEffect, useRef, useState } from 'react';
 import { Vote } from '@/lib/db/schema';
 import equal from 'fast-deep-equal';
 
-interface MessagesProps {
+export interface MessagesProps {
   chatId: string;
-  block: UIBlock;
-  setBlock: Dispatch<SetStateAction<UIBlock>>;
   isLoading: boolean;
-  votes: Array<Vote> | undefined;
-  messages: Array<Message>;
-  setMessages: (
-    messages: Message[] | ((messages: Message[]) => Message[]),
-  ) => void;
-  reload: (
-    chatRequestOptions?: ChatRequestOptions,
-  ) => Promise<string | null | undefined>;
+  votes?: Array<Vote>;
+  messages: Message[];
+  setMessages: Dispatch<SetStateAction<Message[]>>;
+  reload: (chatRequestOptions?: ChatRequestOptions) => Promise<string | null | undefined>;
   isReadonly: boolean;
 }
 
 function PureMessages({
   chatId,
-  block,
-  setBlock,
   isLoading,
   votes,
   messages,
@@ -40,9 +31,10 @@ function PureMessages({
     const container = messagesContainerRef.current;
     if (!container) return;
 
-    // Always scroll to bottom when new messages are added or loading changes
-    container.scrollTop = container.scrollHeight;
-  }, [messages, isLoading]);
+    if (!isScrolledUp) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [messages, isLoading, isScrolledUp]);
 
   const handleScroll = () => {
     const container = messagesContainerRef.current;
@@ -50,7 +42,12 @@ function PureMessages({
 
     const isNearBottom =
       container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-    setIsScrolledUp(!isNearBottom);
+
+    if (isNearBottom && isScrolledUp) {
+      setIsScrolledUp(false);
+    } else if (!isNearBottom && !isScrolledUp) {
+      setIsScrolledUp(true);
+    }
   };
 
   const scrollToBottom = () => {
@@ -76,14 +73,8 @@ function PureMessages({
           key={message.id}
           chatId={chatId}
           message={message}
-          block={block}
-          setBlock={setBlock}
           isLoading={isLoading && messages.length - 1 === index}
-          vote={
-            votes
-              ? votes.find((vote) => vote.messageId === message.id)
-              : undefined
-          }
+          vote={votes?.find((vote) => vote.messageId === message.id)}
           setMessages={setMessages}
           reload={reload}
           isReadonly={isReadonly}

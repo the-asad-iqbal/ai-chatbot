@@ -3,15 +3,12 @@ import {
   pgTable,
   varchar,
   timestamp,
-  json,
   uuid,
   text,
-  primaryKey,
-  foreignKey,
   boolean,
 } from 'drizzle-orm/pg-core';
 
-export const user = pgTable('User', {
+export const user = pgTable('users', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),
   name: varchar('name').notNull(),
   email: varchar('email', { length: 64 }).notNull(),
@@ -20,11 +17,11 @@ export const user = pgTable('User', {
 
 export type User = InferSelectModel<typeof user>;
 
-export const chat = pgTable('Chat', {
+export const chat = pgTable('chats', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),
-  createdAt: timestamp('createdAt').notNull(),
+  createdAt: timestamp('created_at').notNull(),
   title: text('title').notNull(),
-  userId: uuid('userId')
+  userId: uuid('user_id')
     .notNull()
     .references(() => user.id),
   visibility: varchar('visibility', { enum: ['public', 'private'] })
@@ -34,93 +31,34 @@ export const chat = pgTable('Chat', {
 
 export type Chat = InferSelectModel<typeof chat>;
 
-export const message = pgTable('Message', {
+export const message = pgTable('messages', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),
-  chatId: uuid('chatId')
-    .notNull()
+  createdAt: timestamp('created_at').notNull(),
+  content: text('content').notNull(),
+  role: varchar('role', { length: 256 }).notNull(),
+  chatId: uuid('chat_id').notNull()
     .references(() => chat.id),
-  role: varchar('role').notNull(),
-  content: json('content').notNull(),
-  createdAt: timestamp('createdAt').notNull(),
 });
 
 export type Message = InferSelectModel<typeof message>;
 
-export const vote = pgTable(
-  'Vote',
-  {
-    chatId: uuid('chatId')
-      .notNull()
-      .references(() => chat.id),
-    messageId: uuid('messageId')
-      .notNull()
-      .references(() => message.id),
-    isUpvoted: boolean('isUpvoted').notNull(),
-  },
-  (table) => {
-    return {
-      pk: primaryKey({ columns: [table.chatId, table.messageId] }),
-    };
-  },
-);
+export const vote = pgTable('votes', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  chatId: uuid('chat_id').notNull()
+    .references(() => chat.id),
+  messageId: uuid('message_id').notNull()
+    .references(() => message.id),
+  isUpvoted: boolean('is_upvoted').notNull(),
+});
 
 export type Vote = InferSelectModel<typeof vote>;
 
-export const document = pgTable(
-  'Document',
-  {
-    id: uuid('id').notNull().defaultRandom(),
-    createdAt: timestamp('createdAt').notNull(),
-    title: text('title').notNull(),
-    content: text('content'),
-    userId: uuid('userId')
-      .notNull()
-      .references(() => user.id),
-  },
-  (table) => {
-    return {
-      pk: primaryKey({ columns: [table.id, table.createdAt] }),
-    };
-  },
-);
+export const memory = pgTable('memories', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  createdAt: timestamp('created_at').notNull(),
+  text: text('text').notNull(),
+  userId: uuid('user_id').notNull()
+    .references(() => user.id),
+});
 
-export type Document = InferSelectModel<typeof document>;
-
-export const suggestion = pgTable(
-  'Suggestion',
-  {
-    id: uuid('id').notNull().defaultRandom(),
-    documentId: uuid('documentId').notNull(),
-    documentCreatedAt: timestamp('documentCreatedAt').notNull(),
-    originalText: text('originalText').notNull(),
-    suggestedText: text('suggestedText').notNull(),
-    description: text('description'),
-    isResolved: boolean('isResolved').notNull().default(false),
-    userId: uuid('userId')
-      .notNull()
-      .references(() => user.id),
-    createdAt: timestamp('createdAt').notNull(),
-  },
-  (table) => ({
-    pk: primaryKey({ columns: [table.id] }),
-    documentRef: foreignKey({
-      columns: [table.documentId, table.documentCreatedAt],
-      foreignColumns: [document.id, document.createdAt],
-    }),
-  }),
-);
-export type Suggestion = InferSelectModel<typeof suggestion>;
-
-export const Memory = pgTable(
-  'Memory',
-  {
-    id: uuid('id').notNull().defaultRandom(),
-    text: text('text').notNull(),
-    createdAt: timestamp('createdAt').notNull(),
-    userId: uuid('userId')
-      .notNull()
-      .references(() => user.id),
-  }
-)
-
-export type Memory = InferSelectModel<typeof Memory>
+export type Memory = InferSelectModel<typeof memory>;

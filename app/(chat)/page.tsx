@@ -9,10 +9,10 @@ export default async function Page() {
 
   const cookieStore = await cookies();
   const modelIdFromCookie = cookieStore.get('model-id')?.value;
-
   const selectedModelId =
     models.find((model) => model.id === modelIdFromCookie)?.id ||
     DEFAULT_MODEL_NAME;
+  const selectedVisibilityType = 'private';
 
   return (
     <Chat
@@ -20,7 +20,7 @@ export default async function Page() {
       id={id}
       initialMessages={[]}
       selectedModelId={selectedModelId}
-      selectedVisibilityType="private"
+      selectedVisibilityType={selectedVisibilityType}
       isReadonly={false}
     />
   );

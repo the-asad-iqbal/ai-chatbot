@@ -1,6 +1,7 @@
 import React, { memo, useState } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
+import remarkGfm from 'remark-gfm';  // Add this import
 import 'highlight.js/styles/github-dark.css';
 
 const CodeBlock = ({
@@ -241,11 +242,82 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
         />
       );
     },
+
+    table: ({ children, ...props }) => (
+      <div className="my-4 w-full overflow-hidden">
+        <div className="rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-x-auto table-scrollbar">
+          <table
+            className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700 overflow-hidden"
+            {...props}
+          >
+            {children}
+          </table>
+        </div>
+      </div>
+    ),
+
+    thead: ({ children, ...props }) => (
+      <thead
+        className="bg-zinc-50 dark:bg-zinc-800/50 sticky top-0 backdrop-blur-sm backdrop-filter"
+        {...props}
+      >
+        {children}
+      </thead>
+    ),
+
+    tbody: ({ children, ...props }) => (
+      <tbody
+        className="divide-y divide-zinc-200 dark:divide-zinc-700 bg-white dark:bg-zinc-900/50"
+        {...props}
+      >
+        {children}
+      </tbody>
+    ),
+
+    tr: ({ children, ...props }) => (
+      <tr
+        className="
+          hover:bg-zinc-50 dark:hover:bg-zinc-800/50 
+          transition-colors duration-200
+          even:bg-zinc-50/50 dark:even:bg-zinc-800/25
+        "
+        {...props}
+      >
+        {children}
+      </tr>
+    ),
+
+    th: ({ children, ...props }) => (
+      <th
+        className="
+          px-6 py-3 text-left text-xs font-medium 
+          text-zinc-500 dark:text-zinc-400 
+          uppercase tracking-wider
+          whitespace-nowrap
+        "
+        {...props}
+      >
+        {children}
+      </th>
+    ),
+
+    td: ({ children, ...props }) => (
+      <td
+        className="
+          px-6 py-4 text-sm text-zinc-700 dark:text-zinc-300
+          whitespace-nowrap
+        "
+        {...props}
+      >
+        {children}
+      </td>
+    ),
   };
 
   return (
     <ReactMarkdown
       rehypePlugins={[rehypeHighlight]}
+      remarkPlugins={[remarkGfm]}  // Add this line
       components={components}
       className="w-full max-w-2xl break-words text-wrap gap-1"
     >

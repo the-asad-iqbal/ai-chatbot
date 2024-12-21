@@ -8,7 +8,7 @@ import ReactMarkdown from 'react-markdown';
 
 import type { Vote } from '@/lib/db/schema';
 
-import type { UIBlock } from './block';
+// Removed UIBlock import
 import { DocumentToolCall, DocumentToolResult } from './document';
 import { PencilEditIcon, SparklesIcon } from './icons';
 import { Markdown } from './markdown';
@@ -26,8 +26,6 @@ import { UpdateMemoryToolResult, UpdateMemoryToolSkeleton } from './updated-memo
 const PurePreviewMessage = ({
   chatId,
   message,
-  block,
-  setBlock,
   vote,
   isLoading,
   setMessages,
@@ -37,8 +35,6 @@ const PurePreviewMessage = ({
 }: {
   chatId: string;
   message: Message;
-  block: UIBlock;
-  setBlock: Dispatch<SetStateAction<UIBlock>>;
   vote: Vote | undefined;
   isLoading: boolean;
   setMessages: (
@@ -166,30 +162,6 @@ const PurePreviewMessage = ({
                     <div key={toolCallId}>
                       {toolName === 'getWeather' ? (
                         <Weather weatherAtLocation={result} />
-                      ) : toolName === 'createDocument' ? (
-                        <DocumentToolResult
-                          type="create"
-                          result={result}
-                          block={block}
-                          setBlock={setBlock}
-                          isReadonly={isReadonly}
-                        />
-                      ) : toolName === 'updateDocument' ? (
-                        <DocumentToolResult
-                          type="update"
-                          result={result}
-                          block={block}
-                          setBlock={setBlock}
-                          isReadonly={isReadonly}
-                        />
-                      ) : toolName === 'requestSuggestions' ? (
-                        <DocumentToolResult
-                          type="request-suggestions"
-                          result={result}
-                          block={block}
-                          setBlock={setBlock}
-                          isReadonly={isReadonly}
-                        />
                       ) : toolName === 'generateImage' ? (
                         <ImageToolResponse result={result} />
                       ) : toolName === 'updateMemory' ? (
@@ -207,27 +179,6 @@ const PurePreviewMessage = ({
                   >
                     {toolName === 'getWeather' ? (
                       <Weather />
-                    ) : toolName === 'createDocument' ? (
-                      <DocumentToolCall
-                        type="create"
-                        args={args}
-                        setBlock={setBlock}
-                        isReadonly={isReadonly}
-                      />
-                    ) : toolName === 'updateDocument' ? (
-                      <DocumentToolCall
-                        type="update"
-                        args={args}
-                        setBlock={setBlock}
-                        isReadonly={isReadonly}
-                      />
-                    ) : toolName === 'requestSuggestions' ? (
-                      <DocumentToolCall
-                        type="request-suggestions"
-                        args={args}
-                        setBlock={setBlock}
-                        isReadonly={isReadonly}
-                      />
                     ) : toolName === 'generateImage' ? (
                       <ImageToolCallSkeleton key={toolCallId + state} />
                     ) : toolName === 'updateMemory' ? (
