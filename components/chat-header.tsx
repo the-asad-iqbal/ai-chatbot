@@ -44,6 +44,7 @@ function PureChatHeader({
           <VisibilitySelector
             chatId={chatId}
             selectedVisibilityType={selectedVisibilityType}
+            setSelectedVisibilityType={() => {}}
             className="order-1 md:order-3"
           />
         )}

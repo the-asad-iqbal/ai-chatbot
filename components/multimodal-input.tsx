@@ -254,7 +254,7 @@ function PureMultimodalInput({
       )}
 
       <div
-        className={`dark:bg-[#161616] bg-[#494949] gap-2 sm:gap-4 p-2 sm:p-4 w-full max-w-full sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto flex flex-col items-end 
+        className={`dark:bg-[#161616] bg-[#cacaca] text-black dark:text-gray-50 gap-2 sm:gap-4 p-2 sm:p-4 w-full max-w-full sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto flex flex-col items-end 
         ${messages.length > 0 ? 'rounded-t-lg sm:rounded-t-xl' : 'rounded-lg sm:rounded-xl'} 
         cursor-text shadow-lg`}
         onClick={() => textareaRef.current?.focus()}
@@ -262,7 +262,7 @@ function PureMultimodalInput({
         <textarea
           ref={textareaRef}
           spellCheck={false}
-          className="dark:bg-[#161616] bg-[#494949] text-white w-full resize-none outline-none 
+          className="dark:bg-[#161616] bg-[#cacaca] text-black dark:text-white w-full resize-none outline-none 
           transition-all duration-200 ease-in-out overflow-auto p-2 sm:p-3 
           max-h-[150px] sm:max-h-[200px] h-auto min-h-[60px] sm:min-h-[85px] 
           border-none no-scrollbar text-xs sm:text-sm md:text-base"

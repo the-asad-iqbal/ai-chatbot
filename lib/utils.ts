@@ -4,7 +4,6 @@ import type {
   CoreToolMessage,
   Message,
   ToolInvocation,
-  ToolContent,
 } from 'ai';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';

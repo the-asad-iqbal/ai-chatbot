@@ -90,7 +90,7 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
                   content: suggestedAction.action,
                 });
               }}
-              className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-2 sm:flex-col w-full h-auto justify-start items-start bg-[#262525] hover:bg-[#2f2f2f]"
+              className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-2 sm:flex-col w-full h-auto justify-start items-start dark:bg-[#262525] bg-[#bcbcbc] dark:hover:bg-[#2f2f2f] hover:bg-[#9e9e9e]"
             >
               <Icon className="size-5 text-primary" />
               <div className="flex flex-col">

@@ -65,7 +65,7 @@ export function ToolsPopover({ selectedTool, onToolSelect, isLoading }: ToolsPop
             <PopoverTrigger asChild>
                 <Button
                     className={cn(
-                        "cursor-pointer rounded-full size-10",
+                        "cursor-pointer rounded-full size-8",
                         "transition-all duration-200 ease-in-out",
                         "shadow-sm hover:shadow-md",
                         selectedTool
@@ -87,7 +87,7 @@ export function ToolsPopover({ selectedTool, onToolSelect, isLoading }: ToolsPop
                     title={selectedTool ? `Selected: ${getSelectedTool()?.name}` : "Select a tool"}
                 >
                     <ToolIcon
-                        size={18}
+                        size={14}
                         className={cn(
                             "transition-all duration-200 ease-in-out",
                             selectedTool ? "text-white" : "text-current",

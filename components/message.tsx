@@ -131,7 +131,7 @@ const PurePreviewMessage = ({
               >
                 {message.role !== 'user' ? (<>
                   <Markdown>{message.content as string}</Markdown>
-                  {isLoading && message.role === 'assistant' && <div className="size-4 rounded-full dark:bg-white bg-slate-700 animate-pulse"></div>}
+                  {isLoading && message.role === 'assistant' && (<div className="inline-block size-4 rounded-full dark:bg-white bg-slate-700 animate-pulse"></div>)}
                 </>) : (<>{message.content as string}</>)}
               </div>
             </div>
