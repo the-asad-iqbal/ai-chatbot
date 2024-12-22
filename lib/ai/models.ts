@@ -58,4 +58,4 @@ export const models: Array<Model> = [
   }
 ] as const;
 
-export const DEFAULT_MODEL_NAME: string = 'gpt-4o-mini-2024-07-18';
+export const DEFAULT_MODEL_NAME: string = 'gemini-2.0-flash-exp';
