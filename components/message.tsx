@@ -3,7 +3,7 @@
 import type { ChatRequestOptions, Message } from 'ai';
 import cx from 'classnames';
 import { motion } from 'framer-motion';
-import { memo, useState } from 'react';
+import { memo, useState, type Dispatch, type SetStateAction } from 'react';
 import ReactMarkdown from 'react-markdown';
 
 import type { Vote } from '@/lib/db/schema';
@@ -250,4 +250,3 @@ export const ThinkingMessage = () => {
     </motion.div>
   );
 };
-

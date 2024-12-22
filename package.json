@@ -18,7 +18,9 @@
     "db:up": "drizzle-kit up"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^1.0.6",
     "@ai-sdk/groq": "^1.0.8",
+    "@ai-sdk/mistral": "^1.0.6",
     "@ai-sdk/openai": "1.0.6",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-dialog": "^1.1.2",

@@ -8,17 +8,11 @@ export interface Model {
 
 export const models: Array<Model> = [
   {
-    id: 'gpt-4o-mini',
-    label: 'GPT 4o mini',
-    apiIdentifier: 'gpt-4o-mini',
-    description: 'Small model for fast, lightweight tasks',
-  },
-  {
-    id: 'gpt-4o',
-    label: 'GPT 4o',
-    apiIdentifier: 'gpt-4o',
-    description: 'For complex, multi-step tasks',
-  },
+    id: 'Claude 3.5 Sonnet',
+    label: 'Claude 3.5 Sonnet',
+    apiIdentifier: 'claude-3-5-sonnet-20241022',
+    description: 'Best for daily tasks.',
+  }
 ] as const;
 
-export const DEFAULT_MODEL_NAME: string = 'gpt-4o-mini';
+export const DEFAULT_MODEL_NAME: string = 'pixtral-12b-2409';

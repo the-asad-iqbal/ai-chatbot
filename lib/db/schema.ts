@@ -6,6 +6,7 @@ import {
   uuid,
   text,
   boolean,
+  json,
 } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('users', {
@@ -34,7 +35,7 @@ export type Chat = InferSelectModel<typeof chat>;
 export const message = pgTable('messages', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),
   createdAt: timestamp('created_at').notNull(),
-  content: text('content').notNull(),
+  content: json().notNull(),
   role: varchar('role', { length: 256 }).notNull(),
   chatId: uuid('chat_id').notNull()
     .references(() => chat.id),

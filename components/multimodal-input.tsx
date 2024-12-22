@@ -292,7 +292,6 @@ function PureMultimodalInput({
               }
             }
           }}
-          disabled
         />
         <div
           className="absolute top-0 left-0 p-3 pointer-events-none text-sm sm:text-base"
