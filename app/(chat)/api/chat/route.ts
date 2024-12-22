@@ -2,26 +2,20 @@ import {
   type Message,
   createDataStreamResponse,
   convertToCoreMessages,
-  streamObject,
   streamText,
 } from 'ai';
 import { z } from 'zod';
 import Together from "together-ai";
 import { v2 as cloudinary } from 'cloudinary';
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
 import { auth } from '@/app/(auth)/auth';
-import { customModel } from '@/lib/ai';
+import { createModel } from '@/lib/ai';
 import { models } from '@/lib/ai/models';
 import systemPrompt from '@/lib/ai/prompts';
 import {
   addMemory,
   deleteChatById,
+  deleteMessageById,
   getChatById,
   saveChat,
   saveMessages,
@@ -36,6 +30,17 @@ import {
 import { generateTitleFromUserMessage } from '../../actions';
 
 export const maxDuration = 60;
+
+const together = new Together({
+  apiKey: process.env.TOGETHER_API_KEY,
+});
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 
 type AllowedTools =
   | 'getWeather'
@@ -89,17 +94,12 @@ export async function POST(request: Request) {
   }
 
   const userMessageId = generateUUID();
+  let savedUserMessage = false;
 
-  await saveMessages({
-    messages: [
-      { ...userMessage, id: userMessageId, createdAt: new Date(), chatId: id },
-    ],
-  });
-
-  const userMemory = await userMemories({ id: session.user.id });
-  const userProfile = `User Profile: ${JSON.stringify(userMemory)}`;
-
-  const together = new Together({ apiKey: process.env.TOGETHER_API_KEY });
+  const userProfile = await userMemories({
+    id: session.user.id,
+  })
+  const cleanedProfile = userProfile.map((memory) => memory.text).join('-');
 
   return createDataStreamResponse({
     execute: dataStream => {
@@ -109,8 +109,8 @@ export async function POST(request: Request) {
       });
 
       const result = streamText({
-        model: customModel(model.apiIdentifier),
-        system: systemPrompt + userProfile,
+        model: createModel(model.apiIdentifier),
+        system: systemPrompt + `**User Profile**:\n ${cleanedProfile}`,
         messages: coreMessages,
         maxSteps: 5,
         temperature: 1,
@@ -201,6 +201,13 @@ export async function POST(request: Request) {
                 sanitizeResponseMessages(response.messages);
 
               await saveMessages({
+                messages: [
+                  { ...userMessage, id: userMessageId, createdAt: new Date(), chatId: id },
+                ],
+              });
+              savedUserMessage = true;
+
+              await saveMessages({
                 messages: responseMessagesWithoutIncompleteToolCalls.map(
                   (message) => {
                     const messageId = generateUUID();
@@ -222,7 +229,15 @@ export async function POST(request: Request) {
                 ),
               });
             } catch (error) {
+              if (savedUserMessage) {
+                try {
+                  await deleteMessageById({ id: userMessageId });
+                } catch (deleteError) {
+                  console.error('Failed to delete user message after error:', deleteError);
+                }
+              }
               console.error('Failed to save chat');
+              throw error; // Let the error be handled by onError
             }
           }
 
@@ -235,9 +250,7 @@ export async function POST(request: Request) {
 
       result.mergeIntoDataStream(dataStream);
     },
-    onError: (error) => {
-      return error instanceof Error ? error.message : String(error);
-    },
+
   });
 }
 
@@ -267,7 +280,7 @@ export async function DELETE(request: Request) {
     return new Response('Chat deleted', { status: 200 });
   } catch (error) {
     return new Response('An error occurred while processing your request', {
-      status: 500,
+      status: 500
     });
   }
 }

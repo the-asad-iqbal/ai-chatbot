@@ -210,6 +210,15 @@ export async function getMessageById({ id }: { id: string }) {
   }
 }
 
+export async function deleteMessageById({ id }: { id: string }) {
+  try {
+    return await db.delete(message).where(eq(message.id, id));
+  } catch (error) {
+    console.error('Failed to delete message by id from database');
+    throw error;
+  }
+}
+
 export async function deleteMessagesByChatIdAfterTimestamp({
   chatId,
   timestamp,
