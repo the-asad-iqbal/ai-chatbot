@@ -69,7 +69,7 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
   const randomSuggestions = getRandomSuggestions();
 
   return (
-    <div className="grid sm:grid-cols-2 gap-2 w-full">
+    <div className="grid sm:grid-cols-2 gap-2 w-full bg-transparent">
       {randomSuggestions.map((suggestedAction, index) => {
         const Icon = suggestedAction.icon;
         return (
@@ -90,7 +90,7 @@ function PureSuggestedActions({ chatId, append }: SuggestedActionsProps) {
                   content: suggestedAction.action,
                 });
               }}
-              className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-2 sm:flex-col w-full h-auto justify-start items-start"
+              className="text-left border rounded-xl px-4 py-3.5 text-sm flex-1 gap-2 sm:flex-col w-full h-auto justify-start items-start bg-[#262525] hover:bg-[#2f2f2f]"
             >
               <Icon className="size-5 text-primary" />
               <div className="flex flex-col">

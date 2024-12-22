@@ -67,11 +67,7 @@ export function Chat({
           isReadonly={isReadonly}
         />
 
-        {messages.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center gap-6">
-            <Overview />
-          </div>
-        ) : (
+        {messages.length !== 0 && (
           <Messages
             chatId={id}
             isLoading={isLoading}
@@ -83,7 +79,28 @@ export function Chat({
           />
         )}
 
-        <form className="flex mx-auto px-4 bg-background pb-4 md:pb-6 gap-2 w-full md:max-w-3xl">
+        {messages.length === 0 && (
+          <div className="md:max-w-3xl w-full flex flex-col gap-10 m-auto">
+            <Overview />
+
+            {!isReadonly && (
+              <MultimodalInput
+                chatId={id}
+                input={input}
+                setInput={setInput}
+                handleSubmit={handleSubmit}
+                isLoading={isLoading}
+                stop={stop}
+                attachments={attachments}
+                setAttachments={setAttachments}
+                messages={messages}
+                setMessages={setMessages}
+                append={append}
+              />
+            )}
+          </div>)}
+
+        {messages.length !== 0 && (<form className="md:max-w-3xl mx-auto w-full">
           {!isReadonly && (
             <MultimodalInput
               chatId={id}
@@ -99,7 +116,7 @@ export function Chat({
               append={append}
             />
           )}
-        </form>
+        </form>)}
       </div>
     </>
   );

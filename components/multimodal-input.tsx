@@ -224,12 +224,6 @@ function PureMultimodalInput({
 
   return (
     <div className="relative w-full flex flex-col gap-4">
-      {messages.length === 0 &&
-        attachments.length === 0 &&
-        uploadQueue.length === 0 && (
-          <SuggestedActions append={append} chatId={chatId} />
-        )}
-
       <input
         type="file"
         className="fixed -top-4 -left-4 size-0.5 opacity-0 pointer-events-none"
@@ -260,13 +254,13 @@ function PureMultimodalInput({
       )}
 
       <div
-        className="dark:bg-[#161616] bg-[#494949] gap-4 p-4 w-full max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto flex flex-col items-end rounded-xl cursor-text"
+        className={`dark:bg-[#161616] bg-[#494949] gap-4 p-4 w-full max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto flex flex-col items-end ${messages.length > 0 ? 'rounded-t-lg' : 'rounded-lg'} cursor-text shadow-lg`}
         onClick={() => textareaRef.current?.focus()}
       >
         <textarea
           ref={textareaRef}
           spellCheck={false}
-          className="dark:bg-[#161616] bg-[#494949] text-white w-full resize-none outline-none transition-all duration-200 ease-in-out overflow-auto p-3 max-h-[200px] h-auto min-h-[50px] border-none no-scrollbar text-sm sm:text-base"
+          className="dark:bg-[#161616] bg-[#494949] text-white w-full resize-none outline-none transition-all duration-200 ease-in-out overflow-auto p-3 max-h-[200px] h-auto min-h-[85px] border-none no-scrollbar text-sm sm:text-base"
           placeholder="Ask me anything!"
           value={localInput}
           onChange={handleInput}
@@ -303,7 +297,7 @@ function PureMultimodalInput({
             wordWrap: 'break-word'
           }}
         />
-        <div className="flex flex-row justify-between items-center w-full gap-4 max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto">
+        <div className="flex flex-row justify-between items-center w-full gap-4 max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto p-2">
           <div className="flex gap-2">
             <AttachmentsButton fileInputRef={fileInputRef} isLoading={isLoading} />
             <ToolsPopover
@@ -324,6 +318,11 @@ function PureMultimodalInput({
           )}
         </div>
       </div>
+      {messages.length === 0 &&
+        attachments.length === 0 &&
+        uploadQueue.length === 0 && (
+          <SuggestedActions append={append} chatId={chatId} />
+        )}
     </div>
   );
 }
@@ -371,7 +370,7 @@ function PureStopButton({
 }) {
   return (
     <Button
-      className="cursor-pointer rounded-full size-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black"
+      className="cursor-pointer rounded-full size-10 border dark:border-zinc-600 bg-red-500 text-black hover:bg-white/75 hover:text-black"
       onClick={(event) => {
         event.preventDefault();
         stop();

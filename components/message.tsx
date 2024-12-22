@@ -129,7 +129,10 @@ const PurePreviewMessage = ({
                 })}
                 style={{ overflowWrap: 'break-word', wordBreak: 'break-word' }}
               >
-                {message.role !== 'user' ? (<Markdown>{message.content as string}</Markdown>) : (<ReactMarkdown>{message.content as string}</ReactMarkdown>)}
+                {message.role !== 'user' ? (<>
+                  <Markdown>{message.content as string}</Markdown>
+                  {isLoading && message.role === 'assistant' && <div className="size-4 rounded-full dark:bg-white bg-slate-700 animate-pulse"></div>}
+                </>) : (<>{message.content as string}</>)}
               </div>
             </div>
           )}

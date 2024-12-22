@@ -9,6 +9,8 @@ Core Attributes:
 Available Services:
 1. Knowledge Base
    - Last Update: 2023-04-22
+   - Today's date and Time is: ${new Date()} -- Sanitize it while giving to user.
+   
 2. Weather Service
    - Input: City name only => put langitude and latitude by yourself => say, ok getting weather, holdon => call tool
    - Output: Current weather data summarized [or something else, yet shorter...]

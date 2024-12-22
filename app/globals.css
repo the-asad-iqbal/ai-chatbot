@@ -91,11 +91,11 @@
 
 @layer base {
   * {
-    @apply border-border font-["Poppins"];
+    @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-["Poppins"];
   }
 
   @font-face {
@@ -136,86 +136,19 @@
   outline: none;
 }
 
-.suggestion-highlight {
-  @apply bg-blue-200 hover:bg-blue-300 dark:hover:bg-blue-400/50 dark:text-blue-50 dark:bg-blue-500/40;
-}
-
-.dark-rounded-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
-}
-
-.dark-rounded-scrollbar::-webkit-scrollbar {
-  @apply w-3 h-3 bg-transparent;
-}
-
-.dark-rounded-scrollbar::-webkit-scrollbar-track {
-  @apply bg-transparent rounded-full;
-}
-
-.dark-rounded-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-transparent 
-    rounded-full 
-    hover:bg-transparent 
-    dark:hover:bg-transparent 
-    transition-colors 
-    duration-300 
-    ease-in-out 
-    shadow-md;
-}
-
-.custom-scrollbar::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #52525b;
-  border-radius: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #71717a;
-}
-
-.table-scrollbar::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
-}
-
-.table-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.table-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(82, 82, 91, 0.3);
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-}
-
-.table-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(113, 113, 122, 0.5);
-}
-
-.dark .table-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(161, 161, 170, 0.3);
-}
-
-.dark .table-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(161, 161, 170, 0.5);
-}
-
 code,
 kbd,
 pre,
 samp {
   font-family: geist-mono;
-  font-feature-settings: normal;
-  font-variation-settings: normal;
-  font-size: 1em;
   overflow-x: auto;
+}
+
+@keyframes pulse {
+  50% {
+      opacity: .5;
+  }
+}
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
