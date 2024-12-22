@@ -21,11 +21,11 @@ export const ImageToolCallSkeleton: React.FC = () => {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full max-w-[720px] mx-auto p-4 bg-background border rounded-lg shadow-sm"
+            className="w-full max-w-[720px] mx-auto p-2 sm:p-4 bg-background border rounded-lg shadow-sm"
         >
-            <div className="flex gap-3 items-center h-10 mb-4">
-                <div className="flex items-center gap-2 animate-pulse">
-                    <div className="relative size-10 rounded-full overflow-hidden shrink-0">
+            <div className="flex gap-2 sm:gap-3 items-center h-8 sm:h-10 mb-3 sm:mb-4">
+                <div className="flex items-center gap-1.5 sm:gap-2 animate-pulse">
+                    <div className="relative size-8 sm:size-10 rounded-full overflow-hidden shrink-0">
                         <Skeleton className="absolute inset-0" />
                         <motion.div
                             className="absolute inset-0 size-full flex items-center justify-center"
@@ -42,14 +42,14 @@ export const ImageToolCallSkeleton: React.FC = () => {
                             <ImageIcon className="size-5 text-muted-foreground/30" />
                         </motion.div>
                     </div>
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-3 w-24" />
+                    <div className="space-y-1.5 sm:space-y-2">
+                        <Skeleton className="h-3 sm:h-4 w-24 sm:w-32" />
+                        <Skeleton className="h-2.5 sm:h-3 w-20 sm:w-24" />
                     </div>
                 </div>
             </div>
 
-            <div className="w-full max-w-[654px] mx-auto">
+            <div className="w-full max-w-[654px] mx-auto px-0 sm:px-4">
                 <div className="relative w-full aspect-[4/3]">
                     <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 to-zinc-800 rounded-lg overflow-hidden">
                         <div className="absolute inset-0 flex items-center justify-center">
@@ -231,19 +231,19 @@ export const ImageToolResponse: React.FC<{
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="w-full h-auto p-4 bg-background border rounded-lg space-y-4 shadow-sm"
+            className="w-full h-auto p-2 sm:p-4 bg-background border rounded-lg space-y-3 sm:space-y-4 shadow-sm"
         >
-            <div className="flex items-start space-x-4">
-                <div className="bg-green-500/10 p-2 rounded-full">
-                    <ImageIcon className="text-green-500 size-6" />
+            <div className="flex items-start space-x-2 sm:space-x-4">
+                <div className="bg-green-500/10 p-1.5 sm:p-2 rounded-full">
+                    <ImageIcon className="text-green-500 size-5 sm:size-6" />
                 </div>
                 <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-sm">Image Generated</h3>
+                    <h3 className="font-semibold text-xs sm:text-sm">Image Generated</h3>
                     {result.prompt && <ExpandablePrompt text={result.prompt} />}
                 </div>
             </div>
 
-            <div className="relative w-full aspect-[4/3] md:w-[654px] mx-auto">
+            <div className="relative w-full aspect-[4/3] sm:max-w-[654px] mx-auto">
                 <div className={cn(
                     "absolute inset-0 bg-zinc-900/10 rounded-lg transition-opacity duration-300",
                     isImageLoaded ? "opacity-0" : "opacity-100"
@@ -267,7 +267,7 @@ export const ImageToolResponse: React.FC<{
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="absolute right-2 bottom-5 md:bottom-10"
+                    className="absolute right-2 bottom-3 sm:bottom-5 md:bottom-10"
                 >
                     <motion.div
                         initial={{ y: -4, opacity: 0 }}
@@ -279,9 +279,9 @@ export const ImageToolResponse: React.FC<{
                             download={result?.prompt}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="shadow-gray-300 bg-white/90 hover:bg-white text-xs text-black px-3 py-1.5 rounded-full shadow-sm flex items-center space-x-2 transition-all hover:scale-105"
+                            className="shadow-gray-300 bg-white/90 hover:bg-white text-[10px] sm:text-xs text-black px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-sm flex items-center space-x-1.5 sm:space-x-2 transition-all hover:scale-105"
                         >
-                            <DownloadIcon className="size-4" />
+                            <DownloadIcon className="size-3 sm:size-4" />
                             <span>Download</span>
                         </a>
                     </motion.div>

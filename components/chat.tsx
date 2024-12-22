@@ -7,7 +7,6 @@ import useSWR, { useSWRConfig } from 'swr';
 
 import { ChatHeader } from '@/components/chat-header';
 import { Overview } from '@/components/overview';
-import { SuggestedActions } from '@/components/suggested-actions';
 import type { Vote } from '@/lib/db/schema';
 import { fetcher } from '@/lib/utils';
 

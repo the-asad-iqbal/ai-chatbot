@@ -223,7 +223,7 @@ function PureMultimodalInput({
   };
 
   return (
-    <div className="relative w-full flex flex-col gap-4">
+    <div className="relative w-full flex flex-col gap-2 sm:gap-4 px-2 sm:px-0">
       <input
         type="file"
         className="fixed -top-4 -left-4 size-0.5 opacity-0 pointer-events-none"
@@ -234,7 +234,7 @@ function PureMultimodalInput({
       />
 
       {(attachments.length > 0 || uploadQueue.length > 0) && (
-        <div className="flex flex-row gap-2 overflow-x-scroll items-end">
+        <div className="flex flex-row gap-1 sm:gap-2 overflow-x-auto items-end py-2 px-1 sm:px-2">
           {attachments.map((attachment) => (
             <PreviewAttachment key={attachment.url} attachment={attachment} />
           ))}
@@ -254,14 +254,19 @@ function PureMultimodalInput({
       )}
 
       <div
-        className={`dark:bg-[#161616] bg-[#494949] gap-4 p-4 w-full max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto flex flex-col items-end ${messages.length > 0 ? 'rounded-t-lg' : 'rounded-lg'} cursor-text shadow-lg`}
+        className={`dark:bg-[#161616] bg-[#494949] gap-2 sm:gap-4 p-2 sm:p-4 w-full max-w-full sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto flex flex-col items-end 
+        ${messages.length > 0 ? 'rounded-t-lg sm:rounded-t-xl' : 'rounded-lg sm:rounded-xl'} 
+        cursor-text shadow-lg`}
         onClick={() => textareaRef.current?.focus()}
       >
         <textarea
           ref={textareaRef}
           spellCheck={false}
-          className="dark:bg-[#161616] bg-[#494949] text-white w-full resize-none outline-none transition-all duration-200 ease-in-out overflow-auto p-3 max-h-[200px] h-auto min-h-[85px] border-none no-scrollbar text-sm sm:text-base"
-          placeholder="Ask me anything!"
+          className="dark:bg-[#161616] bg-[#494949] text-white w-full resize-none outline-none 
+          transition-all duration-200 ease-in-out overflow-auto p-2 sm:p-3 
+          max-h-[150px] sm:max-h-[200px] h-auto min-h-[60px] sm:min-h-[85px] 
+          border-none no-scrollbar text-xs sm:text-sm md:text-base"
+          placeholder="Help me with..."
           value={localInput}
           onChange={handleInput}
           onKeyDown={(event) => {
@@ -288,7 +293,7 @@ function PureMultimodalInput({
           }}
         />
         <div
-          className="absolute top-0 left-0 p-3 pointer-events-none text-sm sm:text-base"
+          className="absolute top-0 left-0 p-2 sm:p-3 pointer-events-none text-xs sm:text-sm md:text-base"
           dangerouslySetInnerHTML={{ __html: renderHighlightedInput() }}
           style={{
             color: 'transparent',
@@ -297,8 +302,8 @@ function PureMultimodalInput({
             wordWrap: 'break-word'
           }}
         />
-        <div className="flex flex-row justify-between items-center w-full gap-4 max-w-5xl sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto p-2">
-          <div className="flex gap-2">
+        <div className="flex flex-row justify-between items-center w-full gap-2 sm:gap-4 p-1 sm:p-2">
+          <div className="flex gap-1 sm:gap-2">
             <AttachmentsButton fileInputRef={fileInputRef} isLoading={isLoading} />
             <ToolsPopover
               selectedTool={selectedTool}
@@ -321,7 +326,9 @@ function PureMultimodalInput({
       {messages.length === 0 &&
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
-          <SuggestedActions append={append} chatId={chatId} />
+          <div className="w-full max-w-full sm:max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto">
+            <SuggestedActions append={append} chatId={chatId} />
+          </div>
         )}
     </div>
   );
@@ -346,7 +353,8 @@ function PureAttachmentsButton({
 }) {
   return (
     <Button
-      className="cursor-pointer rounded-full size-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black disabled:cursor-not-allowed"
+      className="cursor-pointer rounded-full size-8 sm:size-10 border dark:border-zinc-600 
+      bg-white text-black hover:bg-white/75 hover:text-black disabled:cursor-not-allowed"
       onClick={(event) => {
         event.preventDefault();
         fileInputRef.current?.click();
@@ -354,7 +362,7 @@ function PureAttachmentsButton({
       variant="outline"
       disabled={isLoading}
     >
-      <PaperclipIcon size={14} />
+      <PaperclipIcon size={12} />
     </Button>
   );
 }
@@ -370,14 +378,15 @@ function PureStopButton({
 }) {
   return (
     <Button
-      className="cursor-pointer rounded-full size-10 border dark:border-zinc-600 bg-red-500 text-black hover:bg-white/75 hover:text-black"
+      className="cursor-pointer rounded-full size-8 sm:size-10 border dark:border-zinc-600 
+      bg-red-500 text-black hover:bg-white/75 hover:text-black"
       onClick={(event) => {
         event.preventDefault();
         stop();
         setMessages((messages) => sanitizeUIMessages(messages));
       }}
     >
-      <StopIcon size={14} />
+      <StopIcon size={12} />
     </Button>
   );
 }
@@ -395,14 +404,15 @@ function PureSendButton({
 }) {
   return (
     <Button
-      className="cursor-pointer rounded-full size-10 border dark:border-zinc-600 bg-white text-black hover:bg-white/75 hover:text-black"
+      className="cursor-pointer rounded-full size-8 sm:size-10 border dark:border-zinc-600 
+      bg-white text-black hover:bg-white/75 hover:text-black"
       onClick={(event) => {
         event.preventDefault();
         submitForm();
       }}
       disabled={input.trim().length === 0 || uploadQueue.length > 0}
     >
-      <ArrowUpIcon size={14} />
+      <ArrowUpIcon size={12} />
     </Button>
   );
 }

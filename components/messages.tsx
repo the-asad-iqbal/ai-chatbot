@@ -64,7 +64,7 @@ function PureMessages({
     <div
       ref={messagesContainerRef}
       onScroll={handleScroll}
-      className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4 dark-rounded-scrollbar relative"
+      className="flex flex-col min-w-0 gap-4 sm:gap-6 flex-1 overflow-y-scroll px-2 sm:px-4 pt-4 dark-rounded-scrollbar relative"
     >
       {messages.length === 0 && <Overview />}
 
@@ -90,15 +90,15 @@ function PureMessages({
       {isScrolledUp && (
         <button
           onClick={scrollToBottom}
-          className="fixed bottom-20 left-1/2 transform -translate-x-1/2 
+          className="fixed bottom-20 sm:bottom-24 left-1/2 transform -translate-x-1/2 
           bg-gray-800/70 hover:bg-gray-700/80 text-white 
-          rounded-full p-2 shadow-lg transition-all duration-300 
+          rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 
           flex items-center justify-center z-50 
           hover:scale-110 active:scale-95"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="size-6 animate-bounce"
+            className="size-5 sm:size-6 animate-bounce"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -113,7 +113,7 @@ function PureMessages({
         </button>
       )}
 
-      <div className="shrink-0 min-w-[24px] min-h-[24px]" />
+      <div className="shrink-0 min-w-[16px] sm:min-w-[24px] min-h-[16px] sm:min-h-[24px]" />
     </div>
   );
 }
