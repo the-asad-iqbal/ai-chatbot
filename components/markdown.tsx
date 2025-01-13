@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useRef } from 'react';
 import ReactMarkdown, { type Components } from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';  // Add this import
@@ -15,16 +15,10 @@ const CodeBlock = ({
   const match = /language-(\w+)/.exec(className || '');
   const language = match ? match[1] : 'text';
 
+  const codeRef = useRef<HTMLPreElement>(null);
   const handleCopy = () => {
-    const code = React.Children.toArray(children)
-      .map(child => {
-        if (typeof child === 'string') return child;
-        if (React.isValidElement(child)) return child.props?.children || '';
-        return '';
-      }).join('');
-
-    if (code) {
-      navigator.clipboard.writeText(code)
+    if (codeRef.current) {
+      navigator.clipboard.writeText(codeRef.current.textContent || '')
         .then(() => {
           setIsCopied(true);
           setTimeout(() => setIsCopied(false), 2000);
@@ -32,8 +26,6 @@ const CodeBlock = ({
         .catch(err => {
           console.error("Failed to copy text: ", err);
         });
-    } else {
-      console.error("No valid code to copy.");
     }
   };
 
@@ -55,7 +47,7 @@ const CodeBlock = ({
           ${className} text-sm min-size-full overflow-x-auto bg-zinc-900 p-4 rounded-b-lg text-wrap
         `}
       >
-        <code className={`language-${language}`}>{children}</code>
+        <code className={`language-${language}`} ref={codeRef}>{children}</code>
       </pre>
     </div>
   );
@@ -317,7 +309,7 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
   return (
     <ReactMarkdown
       rehypePlugins={[rehypeHighlight]}
-      remarkPlugins={[remarkGfm]}  // Add this line
+      remarkPlugins={[remarkGfm]}
       components={components}
       className="w-full max-w-2xl break-words text-wrap gap-1"
     >
